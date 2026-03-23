@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riyadh Intelligence Platform — Vision 2030 Intel Map</title>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0A0A;--surface:rgba(12,12,12,0.92);
+  --green:#00E87A;--green-dim:rgba(0,232,122,0.10);
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#FFFFFF;--muted:#888;--dim:#444;
+  --sports:#F59E0B;--hospitality:#38BDF8;--culture:#E879F9;
+  --transport:#34D399;--realestate:#FB923C;--energy:#EF4444;
+}
+html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+#map{position:absolute;inset:0}
+
+/* ── HEADER ── */
+#header{
+  position:absolute;top:0;left:0;right:0;z-index:20;
+  padding:14px 22px 0;
+  background:linear-gradient(to bottom,rgba(10,10,10,0.98) 60%,transparent);
+  pointer-events:none;
+}
+.back-link{font-size:10px;font-weight:400;color:var(--dim);text-decoration:none;pointer-events:all;display:inline-flex;align-items:center;gap:4px;transition:color 0.15s;margin-bottom:4px;letter-spacing:0.02em}
+.back-link:hover{color:var(--green)}
+.brand{font-weight:800;font-size:18px;line-height:1;color:#fff;letter-spacing:-0.02em}
+.brand em{color:var(--green);font-style:normal}
+
+/* ── STATS BAR ── */
+#statsbar{
+  position:absolute;top:70px;left:22px;right:22px;z-index:20;
+  display:flex;gap:0;pointer-events:none;
+}
+.sblock{display:flex;flex-direction:column;gap:1px;padding-right:20px;margin-right:20px;border-right:1px solid var(--border)}
+.sblock:last-child{border-right:none}
+.sval{font-weight:700;font-size:14px;color:#fff}
+.sval.green{color:var(--green)}
+.slabel{font-size:8px;font-weight:400;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase}
+
+/* ── FILTERS ── */
+#filters{position:absolute;top:108px;left:22px;z-index:20;display:flex;flex-direction:column;gap:3px}
+.filter-label{font-size:8px;font-weight:600;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px}
+.filter-btn{
+  display:flex;align-items:center;gap:8px;padding:6px 11px;
+  background:rgba(10,10,10,0.84);border:1px solid var(--border);border-radius:4px;
+  cursor:pointer;font-family:'Poppins',sans-serif;font-size:10px;font-weight:500;
+  color:var(--muted);transition:border-color 0.15s,color 0.15s;
+  backdrop-filter:blur(12px);white-space:nowrap;
+}
+.filter-btn:hover{color:#fff;border-color:var(--border2)}
+.fdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.fcount{margin-left:auto;padding-left:12px;font-size:9px;opacity:0.35}
+
+/* ── POPUP ── */
+.mapboxgl-popup{max-width:330px!important}
+.mapboxgl-popup-content{
+  background:rgba(10,10,10,0.98)!important;border:1px solid var(--border)!important;
+  border-radius:8px!important;padding:0!important;
+  box-shadow:0 28px 70px rgba(0,0,0,0.9)!important;
+  backdrop-filter:blur(24px);overflow:hidden;
+}
+.mapboxgl-popup-tip{display:none!important}
+.mapboxgl-popup-close-button{color:var(--muted)!important;font-size:16px!important;padding:8px 10px!important;background:transparent!important;z-index:2;position:relative}
+.mapboxgl-popup-close-button:hover{color:#fff!important;background:transparent!important}
+
+/* POPUP INTERNALS */
+.p-img-wrap{position:relative;width:100%;height:140px;overflow:hidden;background:#111}
+.p-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s ease}
+.p-img:hover{transform:scale(1.04)}
+.p-img-fallback{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font-size:32px;
+}
+.p-img-overlay{
+  position:absolute;bottom:0;left:0;right:0;height:50%;
+  background:linear-gradient(to top,rgba(10,10,10,1),transparent);
+}
+.ptag{padding:7px 14px;font-size:7px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase}
+.pbody{padding:2px 14px 14px}
+.pname{font-weight:700;font-size:13px;line-height:1.3;color:#fff;margin-bottom:8px}
+.phr{height:1px;background:var(--border);margin-bottom:9px}
+
+/* insight block */
+.p-insight{padding:8px 11px;border-left:2px solid;font-size:9px;font-weight:400;line-height:1.55;margin-bottom:8px}
+
+.pmeta{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px;margin-bottom:10px}
+.pm{display:flex;flex-direction:column;gap:1px}
+.pmk{font-size:7px;font-weight:400;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
+.pmv{font-size:10px;font-weight:600;color:#fff}
+
+.pdesc{font-size:9px;font-weight:300;line-height:1.55;color:var(--muted);margin-bottom:10px}
+
+.p-actions{display:flex;gap:6px}
+.p-link{flex:1;display:block;padding:7px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:4px;font-size:9px;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.15s,border-color 0.15s;text-align:center;letter-spacing:0.02em}
+.p-link:hover{color:#fff;border-color:var(--border2)}
+.p-link.primary{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+.p-link.primary:hover{background:rgba(0,232,122,0.18)}
+
+/* ── METRICS PANEL ── */
+#metrics{
+  position:absolute;bottom:46px;right:22px;z-index:20;
+  width:220px;background:var(--surface);
+  border:1px solid var(--border);border-radius:6px;
+  overflow:hidden;backdrop-filter:blur(14px);
+}
+.mpanel-hdr{display:flex;align-items:center;gap:7px;padding:8px 12px;border-bottom:1px solid var(--border)}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1.8s ease-in-out infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.1}}
+.mpanel-title{font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+.mpanel-time{margin-left:auto;font-size:8px;font-weight:300;color:var(--dim)}
+.mitem{padding:7px 12px;border-bottom:1px solid var(--border);animation:fin 0.3s ease}
+.mitem:last-child{border-bottom:none}
+@keyframes fin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.mlabel{font-size:7px;font-weight:500;color:var(--muted);margin-bottom:2px;letter-spacing:0.04em}
+.mval{font-size:11px;font-weight:600;color:#fff;line-height:1.2}
+.mval span{color:var(--green)}
+
+/* ── CLOCK ── */
+#clock{position:absolute;top:14px;right:22px;z-index:21;text-align:right;pointer-events:none}
+.clock-time{font-weight:600;font-size:13px;color:var(--green);letter-spacing:0.04em}
+.clock-date{font-size:8px;font-weight:300;color:var(--dim);margin-top:1px}
+
+/* ── TICKER ── */
+#ticker{position:absolute;bottom:0;left:0;right:0;z-index:20;height:36px;background:rgba(10,10,10,0.97);border-top:1px solid var(--border);display:flex;align-items:center;overflow:hidden}
+.ttag{flex-shrink:0;padding:0 14px;font-size:7px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#000;background:var(--green);height:100%;display:flex;align-items:center}
+.ttrack{display:flex;animation:ticker 55s linear infinite;white-space:nowrap}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.titem{font-size:9px;font-weight:400;padding:0 26px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.titem strong{color:#fff;font-weight:600}
+
+.mapboxgl-ctrl-attrib,.mapboxgl-ctrl-logo{display:none!important}
+.mapboxgl-ctrl-group{background:rgba(10,10,10,0.88)!important;border:1px solid var(--border)!important;border-radius:4px!important}
+.mapboxgl-ctrl-group button{background:transparent!important}
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<!-- HEADER -->
+<div id="header">
+  <a class="back-link" href="https://riyadh.ahmedmezil.com" target="_blank">← Riyadh Intelligence Platform</a>
+  <div class="brand">Riyadh Intelligence <em>Platform</em></div>
+</div>
+
+<!-- CLOCK -->
+<div id="clock">
+  <div class="clock-time" id="clock-time">00:00:00</div>
+  <div class="clock-date" id="clock-date">Riyadh · AST</div>
+</div>
+
+<!-- STATS BAR -->
+<div id="statsbar">
+  <div class="sblock"><div class="sval" id="s-projects">27</div><div class="slabel">Projects</div></div>
+  <div class="sblock"><div class="sval green">$2.1T</div><div class="slabel">Total Pipeline</div></div>
+  <div class="sblock"><div class="sval" id="s-days">—</div><div class="slabel">Days to 2030</div></div>
+  <div class="sblock"><div class="sval green">2034</div><div class="slabel">FIFA World Cup</div></div>
+  <div class="sblock"><div class="sval green">2030</div><div class="slabel">World Expo</div></div>
+</div>
+
+<!-- FILTERS -->
+<div id="filters">
+  <div class="filter-label">Sector</div>
+  <button class="filter-btn" data-sector="all"><span class="fdot" style="background:var(--green)"></span>All Projects<span class="fcount" id="c-all">30</span></button>
+  <button class="filter-btn" data-sector="sports"><span class="fdot" style="background:var(--sports)"></span>Sports & Performance<span class="fcount" id="c-sports"></span></button>
+  <button class="filter-btn" data-sector="realestate"><span class="fdot" style="background:var(--realestate)"></span>Real Estate & Mixed<span class="fcount" id="c-realestate"></span></button>
+  <button class="filter-btn" data-sector="hospitality"><span class="fdot" style="background:var(--hospitality)"></span>Hospitality & Tourism<span class="fcount" id="c-hospitality"></span></button>
+  <button class="filter-btn" data-sector="culture"><span class="fdot" style="background:var(--culture)"></span>Culture & Entertainment<span class="fcount" id="c-culture"></span></button>
+  <button class="filter-btn" data-sector="transport"><span class="fdot" style="background:var(--transport)"></span>Transport & Infra<span class="fcount" id="c-transport"></span></button>
+  <button class="filter-btn" data-sector="energy"><span class="fdot" style="background:var(--energy)"></span>Energy & Industry<span class="fcount" id="c-energy"></span></button>
+</div>
+
+<!-- METRICS PANEL -->
+<div id="metrics">
+  <div class="mpanel-hdr">
+    <div class="live-dot"></div>
+    <div class="mpanel-title">Intel Feed</div>
+    <div class="mpanel-time" id="m-time">LIVE</div>
+  </div>
+  <div id="m-items"></div>
+</div>
+
+<!-- TICKER -->
+<div id="ticker">
+  <div class="ttag">Vision 2030</div>
+  <div style="overflow:hidden;flex:1"><div class="ttrack" id="ttrack"></div></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// PROJECT DATABASE
+// To add projects: copy a block and fill in the fields.
+// sectors: sports | realestate | hospitality | culture | transport
+// audience object: investor / developer / builder / government
+// ═══════════════════════════════════════════════════════════
+const PROJECTS = [
+
+  // ── SPORTS ──
+  {id:1,sector:"sports",name:"Prince Mohammed bin Salman Stadium (Qiddiya)",
+    lat:24.4949,lng:46.2047,value:"$8B",gdp:"$9.8B GDP contribution",jobs:"185,000",status:"Under Construction",completion:"2029",phase:"Phase 1",contractor:"FCC Construcción + Nesma & Partners",
+    description:"46,979-seat FIFA 2034 World Cup venue built on the edge of Tuwaiq cliffs. World's first stadium with retractable roof, movable pitch, and full LED wall.",
+    image:"https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800&q=80",
+    link:"https://qiddiya.com"
+  },
+  {id:2,sector:"sports",name:"King Fahd International Stadium Upgrade",
+    lat:24.7141,lng:46.7189,value:"$500M",gdp:"Direct FIFA 2034 asset",jobs:"12,000",status:"Planning",completion:"2033",phase:"Design",contractor:"TBD — MOH tender expected 2026",
+    description:"Flagship national stadium hosting FIFA 2034 matches. Seating capacity upgrade, cooling systems overhaul, and sports science infrastructure integration.",
+    image:"https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80",
+    link:"https://www.saff.com.sa"
+  },
+  {id:3,sector:"sports",name:"Sports Boulevard — Riyadh",
+    lat:24.6900,lng:46.6950,value:"$3.8B",gdp:"$5.2B",jobs:"94,000",status:"Under Construction",completion:"2030",phase:"Phase 2 of 4",contractor:"Multiple — Royal Commission for Riyadh City",
+    description:"135km linear sports and wellness corridor cutting through Riyadh. Cycling, athletics, padel, aquatics, outdoor fitness, and commercial retail zones.",
+    image:"https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&q=80",
+    link:"https://sportsblvd.com.sa"
+  },
+  {id:4,sector:"sports",name:"Prince Faisal bin Fahd Olympic Complex",
+    lat:24.7248,lng:46.6739,value:"$1.2B",gdp:"$2.1B",jobs:"8,500",status:"Expansion",completion:"2028",phase:"Expansion Phase",contractor:"Saudi Binladin Group",
+    description:"National Olympic training complex — aquatics, athletics, gymnastics, multi-sport halls. Elite athlete preparation hub for KSA national teams.",
+    image:"",
+    link:"https://www.mof.gov.sa"
+  },
+  {id:5,sector:"sports",name:"King Abdullah Sports City — Jeddah",
+    lat:21.6437,lng:39.1376,value:"$4B",gdp:"$6.5B",jobs:"47,000",status:"Operational + Expanding",completion:"2026",phase:"Operational",contractor:"Operational — SCC",
+    description:"70,000-seat stadium with performance facilities, hosting Saudi Pro League, international boxing, and major events. Now expanding with new sports science centre.",
+    image:"https://images.unsplash.com/photo-1459865264687-595d652de67e?w=800&q=80",
+    link:"https://www.kasa.com.sa"
+  },
+  {id:6,sector:"sports",name:"New Murabba Arena",
+    lat:24.7170,lng:46.6180,value:"$50B",gdp:"$48B",jobs:"334,000",status:"Under Construction",completion:"2032",phase:"Phase 1",contractor:"Multiple NEOM-adjacent contractors",
+    description:"45,000-seat events arena at the heart of New Murabba district. Hosts international concerts, boxing, basketball, and cultural events alongside The Mukaab.",
+    image:"https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80",
+    link:"https://newmurabba.com"
+  },
+
+  // ── REAL ESTATE ──
+  {id:7,sector:"realestate",name:"The Mukaab — New Murabba",
+    lat:24.7155,lng:46.6155,value:"$8B",gdp:"Included in New Murabba $48B",jobs:"50,000+",status:"Under Construction",completion:"2030",phase:"Core Structure",contractor:"TBD — PIF direct",
+    description:"400m × 400m × 400m cube structure — one of the world's most ambitious architectural feats. Immersive digital environment inside with 20 city blocks worth of internal space.",
+    image:"https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80",
+    link:"https://newmurabba.com"
+  },
+  {id:8,sector:"realestate",name:"Jeddah Tower (Kingdom Tower)",
+    lat:21.5433,lng:39.1728,value:"$1.5B",gdp:"$2.3B",jobs:"18,000",status:"Under Construction — Resumed",completion:"2028",phase:"Structure — ~40% complete",contractor:"Saudi Binladin Group",
+    description:"World's first 1km-tall skyscraper. 200+ floors of luxury residences, offices, hotel (Four Seasons), and observation deck. Under construction since 2013, resumed 2023.",
+    image:"https://images.unsplash.com/photo-1611095790444-1dfa35e37b52?w=800&q=80",
+    link:"https://jeddahtower.com"
+  },
+  {id:9,sector:"realestate",name:"ROSHN — National Communities",
+    lat:24.8500,lng:46.8000,value:"$5B+",gdp:"$12B",jobs:"120,000",status:"Rolling Delivery",completion:"2030",phase:"Multiple Phases Active",contractor:"ROSHN Group (PIF)",
+    description:"PIF-backed national developer delivering 400,000+ homes across Saudi cities. Integrated communities with schools, retail, parks, and healthcare in all major metros.",
+    image:"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80",
+    link:"https://www.roshn.sa"
+  },
+  {id:10,sector:"realestate",name:"Trojena — NEOM Ski Resort",
+    lat:28.0833,lng:35.4167,value:"$5B",gdp:"$7B tourism",jobs:"30,000",status:"Under Construction",completion:"2027",phase:"Phase 1 — Ski Village",contractor:"NEOM Company",
+    description:"Year-round mountain destination with outdoor ski slopes, lakes, nature reserve, and adventure sports. Hosting Asian Winter Games 2029. Altitude: 1,500–2,600m.",
+    image:"https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&q=80",
+    link:"https://www.neom.com/en-us/regions/trojena"
+  },
+  {id:11,sector:"realestate",name:"Expo 2030 Riyadh Site",
+    lat:24.7136,lng:46.6753,value:"$7.8B",gdp:"$38B during event",jobs:"300,000",status:"Under Construction",completion:"2030",phase:"Site Preparation",contractor:"Royal Commission for Riyadh City",
+    description:"World Expo 2030 hosted in Riyadh. 50M projected visitors over 6 months. Theme: 'The Era of Change: Together for a Foresighted Tomorrow.' 180 participating nations.",
+    image:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
+    link:"https://expo2030riyadh.com"
+  },
+  {id:12,sector:"realestate",name:"Oxagon — NEOM Industrial Port",
+    lat:27.9833,lng:35.2000,value:"$7B",gdp:"$14B",jobs:"90,000",status:"Phase 1 Active",completion:"2030",phase:"Phase 1",contractor:"NEOM Company + partners",
+    description:"World's largest floating industrial complex. Green hydrogen production, advanced manufacturing, and logistics port. Eight-sided structure on the Red Sea.",
+    image:"",
+    link:"https://www.neom.com/en-us/regions/oxagon"
+  },
+
+  // ── HOSPITALITY ──
+  {id:13,sector:"hospitality",name:"NEOM — The Line",
+    lat:28.0000,lng:35.2000,value:"$500B",gdp:"$48B phase 1",jobs:"380,000",status:"Under Construction",completion:"2035+",phase:"Phase 1 — 2.4km by 2030",contractor:"Multiple — NEOM Company",
+    description:"170km linear cognitive city with no roads, 100% renewable energy, AI-managed systems, and mirrored exterior. Phase 1 (2.4km) delivering by 2030.",
+    image:"https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=800&q=80",
+    link:"https://www.neom.com/en-us/regions/theline"
+  },
+  {id:14,sector:"hospitality",name:"Red Sea Project",
+    lat:22.0000,lng:38.5000,value:"$28B",gdp:"$22B",jobs:"70,000",status:"Phase 1 Operational",completion:"2030",phase:"Phase 1 Open",contractor:"Red Sea Global (RSG)",
+    description:"Luxury island resort archipelago — 50 hotels, 8,000 hotel keys, private airport, and 200km of pristine Red Sea coastline. Zero waste, carbon-neutral policy.",
+    image:"https://images.unsplash.com/photo-1439130490301-25e322d88054?w=800&q=80",
+    link:"https://www.theredsea.sa"
+  },
+  {id:15,sector:"hospitality",name:"Amaala — Triple Bay",
+    lat:28.3000,lng:35.1500,value:"$12B",gdp:"$9B",jobs:"14,000",status:"Under Construction",completion:"2028",phase:"Phase 1",contractor:"Red Sea Global (RSG)",
+    description:"Ultra-luxury wellness and yachting destination. 3 villages, 25km of coastline, 3,000 hotel keys. 'The Riviera of the Middle East.' Performance wellness as core product.",
+    image:"",
+    link:"https://www.amaala.com"
+  },
+  {id:16,sector:"hospitality",name:"Sindalah Island — NEOM",
+    lat:28.1700,lng:35.4300,value:"$4B",gdp:"$3.5B",jobs:"3,500",status:"Opening 2025–26",completion:"2026",phase:"Final Fit-Out",contractor:"NEOM Company",
+    description:"Luxury yacht hub — 3 resorts, 86 piers, 50+ luxury brands, fully pedestrian. First NEOM destination to open. Gateway to Red Sea exploration.",
+    image:"https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80",
+    link:"https://www.neom.com/en-us/regions/sindalah"
+  },
+  {id:17,sector:"hospitality",name:"Diriyah Gate Cultural District",
+    lat:24.7300,lng:46.5712,value:"$62B",gdp:"$14.5B commissioned",jobs:"55,000",status:"Phase 1 Delivering",completion:"2030",phase:"Phase 1 — Multiple open",contractor:"Diriyah Company (PIF)",
+    description:"UNESCO World Heritage site transformed into global destination. At-Turaif district, luxury hotels, cultural museums, restaurants, and residential. Targets 27M visitors/year.",
+    image:"https://images.unsplash.com/photo-1548813395-a8c660a9b0d0?w=800&q=80",
+    link:"https://www.diriyah.sa"
+  },
+
+  // ── CULTURE ──
+  {id:18,sector:"culture",name:"King Salman Park",
+    lat:24.7500,lng:46.6500,value:"$23B",gdp:"$25B",jobs:"140,000",status:"Phase 1 Open",completion:"2030",phase:"Phase 1 Open",contractor:"Royal Commission for Riyadh City",
+    description:"World's largest urban park — 13.4km² in central Riyadh. Museums, performing arts, sports, F&B, cultural venues, and green corridors. 10M visitors expected annually.",
+    image:"https://images.unsplash.com/photo-1565181616718-8be44b9d9d2f?w=800&q=80",
+    link:"https://kingsalmanpark.sa"
+  },
+  {id:19,sector:"culture",name:"Qiddiya Entertainment City",
+    lat:24.5100,lng:46.2200,value:"$8B",gdp:"$9.8B",jobs:"185,000",status:"Phase 1 Delivering",completion:"2028",phase:"Six Flags Open Dec 2025",contractor:"Qiddiya Investment Company",
+    description:"Saudi Arabia's entertainment capital. Six Flags open Dec 2025. 12 theme parks, 400+ attractions, performing arts centre, Formula E circuit. 500,000 future residents.",
+    image:"https://images.unsplash.com/photo-1563089145-599997674d42?w=800&q=80",
+    link:"https://qiddiya.com"
+  },
+  {id:20,sector:"culture",name:"Riyadh Season — Annual Mega-Events",
+    lat:24.6800,lng:46.7200,value:"$1B+ annual",gdp:"$4B annual",jobs:"40,000 seasonal",status:"Annual — Expanding",completion:"Recurring",phase:"Season 6 (2025–26)",contractor:"General Entertainment Authority",
+    description:"Annual mega-event season: boxing (Fury, Joshua, Usyk), WWE, F1 Experiences, concerts, and international sports. Expanding venues and duration each year.",
+    image:"",
+    link:"https://www.riyadhseason.sa"
+  },
+  {id:21,sector:"culture",name:"Ithra — King Abdulaziz Center",
+    lat:26.3090,lng:50.1130,value:"$2B",gdp:"$3.5B",jobs:"8,000",status:"Operational",completion:"Ongoing",phase:"Operational",contractor:"Saudi Aramco",
+    description:"Saudi Aramco's cultural and innovation campus in Dhahran. Museum, cinema, makerspace, library, and talent development programs. 1.5M visitors/year.",
+    image:"https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80",
+    link:"https://www.ithra.com"
+  },
+
+  // ── TRANSPORT ──
+  {id:22,sector:"transport",name:"King Salman International Airport",
+    lat:24.9576,lng:46.7018,value:"$147B",gdp:"$112B",jobs:"500,000",status:"Under Construction",completion:"2030",phase:"Phase 1 — Terminal 1",contractor:"KAFD + RCRC managed",
+    description:"World's largest airport terminal replacing KKIA. 185M passengers/year capacity. 6 runways, dedicated cargo city, and integrated transit hub. 57km² total site.",
+    image:"https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80",
+    link:"https://www.gaca.gov.sa"
+  },
+  {id:23,sector:"transport",name:"Riyadh Metro — Full Network",
+    lat:24.6877,lng:46.7219,value:"$22B",gdp:"$18B",jobs:"44,000",status:"Operational",completion:"2024",phase:"Fully Operational",contractor:"Multiple consortia",
+    description:"176 stations, 6 lines, 176km — one of the world's longest metro networks. Connects major districts, giga-projects, and airports across Riyadh.",
+    image:"https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800&q=80",
+    link:"https://www.riyadhmetro.gov.sa"
+  },
+  {id:24,sector:"transport",name:"Saudi Land Bridge Railway",
+    lat:24.8000,lng:46.9000,value:"$7B",gdp:"$15B",jobs:"22,000",status:"Planning — Phase 2",completion:"2030",phase:"Phase 2 Expansion",contractor:"Saudi Railway Company (SAR)",
+    description:"Cross-country freight and passenger railway connecting Riyadh to Jeddah, Dammam, and Haradh. Phase 2 expanding freight capacity and adding passenger service.",
+    image:"",
+    link:"https://www.sar.com.sa"
+  },
+
+  // ── ADDITIONAL REAL ESTATE ──
+  {id:25,sector:"realestate",name:"KAFD — King Abdullah Financial District",
+    lat:24.7700,lng:46.6400,value:"$10B",gdp:"$22B",jobs:"67,000",status:"Operational + Expanding",completion:"Ongoing",phase:"Operational",contractor:"Multiple — KAFD Authority",
+    description:"Riyadh's financial hub — 73 towers, 1.6M sqm commercial space. HQ of PIF, Vision 2030 delivery bodies, major banks, and international firms.",
+    image:"https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80",
+    link:"https://kafd.sa"
+  },
+  {id:26,sector:"realestate",name:"SPARK — King Salman Energy Park",
+    lat:26.8667,lng:49.6833,value:"$4.3B",gdp:"$12B",jobs:"100,000",status:"Phase 1 Operational",completion:"2035",phase:"Phase 2 Active",contractor:"Aramco + MODON",
+    description:"World-scale industrial city for energy sector supply chain. 50km² site near Dammam. Manufactures energy equipment, oilfield services, and clean energy tech.",
+    image:"",
+    link:"https://www.spark.com.sa"
+  },
+  {id:27,sector:"realestate",name:"Jeddah Waterfront — Corniche Development",
+    lat:21.5400,lng:39.1400,value:"$6B",gdp:"$8.5B",jobs:"35,000",status:"Under Construction",completion:"2028",phase:"Phase 2 Active",contractor:"Jeddah Municipality + PIF",
+    description:"30km Corniche regeneration with luxury hotels, branded residences, retail, F&B, and marine sports infrastructure. Integrated with Jeddah Tower precinct.",
+    image:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
+    link:"https://www.jeddah.gov.sa"
+  },
+
+  // ── ENERGY ──
+  {
+    id:28, sector:"energy",
+    name:"NEOM Green Hydrogen Plant",
+    lat:28.1000, lng:35.0000,
+    value:"$8.4B", gdp:"$12B", jobs:"15,000", status:"Under Construction", completion:"2030", phase:"Phase 1", contractor:"ACWA Power + Air Products + NEOM Co.",
+    description:"World's largest green hydrogen and ammonia plant. 4GW electrolysis powered by 100% renewables. 650 tonnes of hydrogen/day for export to global markets.",
+    image:"https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80",
+    link:"https://www.neom.com/en-us/sectors/energy"
+  },
+  {
+    id:29, sector:"energy",
+    name:"NEOM Solar & Wind Gigaproject",
+    lat:28.2000, lng:35.5000,
+    value:"$50B", gdp:"$30B", jobs:"25,000", status:"Phase 1 Active", completion:"2030", phase:"Phase 1 — 9GW renewables", contractor:"ACWA Power + Saudi Aramco",
+    description:"50GW renewable energy target for NEOM by 2030. Combination of utility-scale solar PV, onshore wind, and offshore wind farms across the NEOM region.",
+    image:"https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80",
+    link:"https://www.neom.com/en-us/sectors/energy"
+  },
+  {
+    id:30, sector:"energy",
+    name:"Saudi Aramco — Upstream Expansion",
+    lat:26.3167, lng:50.1167,
+    value:"$40B", gdp:"$180B annual", jobs:"75,000", status:"Active Investment Cycle", completion:"2028", phase:"2024–2028 Cap-Ex Cycle", contractor:"Saudi Aramco + international partners",
+    description:"$40B capital investment program 2024–2028 to maintain 12M bbl/day production capacity, expand gas production, and grow domestic refining. Anchors KSA fiscal revenue.",
+    image:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80",
+    link:"https://www.aramco.com"
+  }
+];
+
+// ─────────────────────────────────────────────
+const COLORS={sports:'#F59E0B',realestate:'#FB923C',hospitality:'#38BDF8',culture:'#E879F9',transport:'#34D399',energy:'#EF4444'};
+const EMOJI={sports:'🏟️',realestate:'🏗️',hospitality:'🏨',culture:'🎭',transport:'🚇',energy:'⚡'};
+const SECTOR_LABELS={sports:'Sports & Performance',realestate:'Real Estate',hospitality:'Hospitality & Tourism',culture:'Culture & Entertainment',transport:'Transport & Infra',energy:'Energy & Industry'};
+
+const FEED=[
+  {label:"Total Vision 2030 Pipeline",val:"<span>$2.1T+</span> across 30 tracked projects"},
+  {label:"Highest Value Project",val:"NEOM The Line — <span>$500B</span>"},
+  {label:"Most Jobs Created",val:"King Salman Airport — <span>500,000</span>"},
+  {label:"Nearest Deadline",val:"Sindalah Island — <span>2026</span>"},
+  {label:"Sports Opportunity Score",val:"<span>9.4 / 10</span> — FIFA 2034 + V2030"},
+  {label:"Real Estate Projects Tracked",val:"<span>7</span> mega developments — $100B+"},
+  {label:"Energy Sector Investment",val:"<span>$130B+</span> in green & conventional energy"},
+  {label:"HarakaMed Target Sites",val:"<span>6</span> high-fit sports venues"},
+  {label:"Construction Peak Year",val:"<span>2027–2028</span> across all sectors"},
+  {label:"Expo 2030 Visitor Projection",val:"<span>50M</span> visitors in 6 months"},
+  {label:"FIFA 2034 Stadium Count",val:"<span>15</span> stadiums across 5 cities"},
+];
+
+const TICKER=[
+  "Prince Mohammed bin Salman Stadium · Qiddiya · <strong>$8B</strong> · FIFA 2034 venue",
+  "NEOM The Line · 170km linear city · <strong>$500B</strong> · Phase 1 by 2030",
+  "Jeddah Tower · World's tallest building · <strong>1,000m</strong> · Completion 2028",
+  "King Salman Airport · 185M passengers/year · <strong>$147B</strong>",
+  "NEOM Green Hydrogen · <strong>$8.4B</strong> · 650 tonnes/day by 2030",
+  "Sports Boulevard Riyadh · 135km active corridor · <strong>$3.8B</strong>",
+  "New Murabba · 104,000 residential units · <strong>$50B</strong> · 334,000 jobs",
+  "Expo 2030 Riyadh · 50M visitors · 180 nations · <strong>$38B</strong> economic impact",
+  "NEOM Solar & Wind · <strong>$50B</strong> clean energy commitment by 2030",
+  "Saudi Aramco Expansion · <strong>$40B</strong> upstream investment 2024–2028",
+  "HarakaMed · AI markerless motion analysis · ahmedmezil.com",
+  "Riyadh Intelligence Platform · riyadh.ahmedmezil.com",
+];
+
+// ── CLOCK ──
+function updateClock(){
+  const r=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Riyadh'}));
+  document.getElementById('clock-time').textContent=[r.getHours(),r.getMinutes(),r.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');
+  document.getElementById('clock-date').textContent=r.toLocaleDateString('en-US',{timeZone:'Asia/Riyadh',weekday:'short',month:'short',day:'numeric'})+' · AST';
+}
+setInterval(updateClock,1000); updateClock();
+document.getElementById('s-days').textContent=Math.ceil((new Date('2030-01-01')-new Date())/86400000).toLocaleString();
+
+// ── TICKER ──
+document.getElementById('ttrack').innerHTML=[...TICKER,...TICKER].map(t=>`<div class="titem">${t}<span style="color:var(--dim);padding:0 4px">·</span></div>`).join('');
+
+// ── FEED ──
+let fi=0;
+function rotateFeed(){
+  const slice=[]; for(let i=0;i<4;i++) slice.push(FEED[(fi+i)%FEED.length]);
+  document.getElementById('m-items').innerHTML=slice.map(e=>`<div class="mitem"><div class="mlabel">${e.label}</div><div class="mval">${e.val}</div></div>`).join('');
+  fi=(fi+1)%FEED.length;
+  document.getElementById('m-time').textContent=new Date().toLocaleTimeString('en-US',{timeZone:'Asia/Riyadh',hour:'2-digit',minute:'2-digit'})+' AST';
+}
+rotateFeed(); setInterval(rotateFeed,4500);
+
+// ── COUNTS ──
+function updateCounts(sector='all'){
+  const counts={};
+  PROJECTS.forEach(p=>{counts[p.sector]=(counts[p.sector]||0)+1;});
+  const visible=sector==='all'?PROJECTS.length:PROJECTS.filter(p=>p.sector===sector).length;
+  document.getElementById('s-projects').textContent=visible;
+  document.getElementById('c-all').textContent=PROJECTS.length;
+  Object.entries(counts).forEach(([s,n])=>{const el=document.getElementById(`c-${s}`);if(el)el.textContent=n;});
+}
+updateCounts();
+
+// ── POPUP HTML ──
+function popupHTML(p){
+  const c=COLORS[p.sector];
+
+  let imgSection;
+  if(p.image){
+    imgSection=`<div class="p-img-wrap">
+      <img class="p-img" src="${p.image}" alt="${p.name}" loading="lazy"
+        onerror="this.parentNode.innerHTML='<div class=\\'p-img-fallback\\' style=\\'background:${c}18\\'>${EMOJI[p.sector]||'📍'}</div>'">
+      <div class="p-img-overlay"></div>
+    </div>`;
+  } else {
+    imgSection=`<div class="p-img-wrap"><div class="p-img-fallback" style="background:${c}15;height:70px">${EMOJI[p.sector]||'📍'}</div></div>`;
+  }
+
+  return `
+    ${imgSection}
+    <div class="ptag" style="background:${c}18;color:${c}">${SECTOR_LABELS[p.sector]||p.sector} · Vision 2030</div>
+    <div class="pbody">
+      <div class="pname">${p.name}</div>
+      <div class="p-insight" style="background:${c}10;border-color:${c};color:${c}">${p.description}</div>
+      <div class="phr"></div>
+      <div class="pmeta">
+        <div class="pm"><div class="pmk">Investment</div><div class="pmv" style="color:${c}">${p.value}</div></div>
+        <div class="pm"><div class="pmk">GDP Contribution</div><div class="pmv">${p.gdp}</div></div>
+        <div class="pm"><div class="pmk">Jobs</div><div class="pmv">${p.jobs}</div></div>
+        <div class="pm"><div class="pmk">Status</div><div class="pmv">${p.status}</div></div>
+        <div class="pm"><div class="pmk">Completion</div><div class="pmv">${p.completion}</div></div>
+        <div class="pm"><div class="pmk">Phase</div><div class="pmv">${p.phase}</div></div>
+      </div>
+      <div class="p-actions">
+        ${p.link?`<a class="p-link primary" href="${p.link}" target="_blank" rel="noopener">↗ Official Source</a>`:''}
+        <a class="p-link" href="https://www.google.com/maps?q=${p.lat},${p.lng}" target="_blank" rel="noopener">📍 Maps</a>
+      </div>
+    </div>`;
+}
+
+// ── MAP ──
+mapboxgl.accessToken='pk.eyJ1IjoiYWFhbWV6aWwiLCJhIjoiY2xxNzFvZmp4MTBnbzJpdWs5YzFla2NmOCJ9.j3lxSfWk0WOkr9VoUsw2ig';
+
+const map=new mapboxgl.Map({
+  container:'map', style:'mapbox://styles/mapbox/dark-v11',
+  center:[44.5,26.0], zoom:5.2, pitch:28, bearing:-4, antialias:true
+});
+
+let activeFilter='all';
+let hoveredId=null;
+let activePopup=null;
+let activeProjectId=null;
+
+function buildGeoJSON(sector){
+  return{type:'FeatureCollection',features:PROJECTS.filter(p=>sector==='all'||p.sector===sector).map(p=>({
+    type:'Feature', id:p.id,
+    geometry:{type:'Point',coordinates:[p.lng,p.lat]},
+    properties:{id:p.id,sector:p.sector,name:p.name,color:COLORS[p.sector]}
+  }))};
+}
+
+map.on('load',()=>{
+  map.setFog({color:'rgb(10,10,10)','high-color':'rgb(12,14,20)','horizon-blend':0.015,'space-color':'rgb(4,4,6)','star-intensity':0.55});
+
+  map.addSource('projects',{type:'geojson',data:buildGeoJSON('all'),promoteId:'id'});
+
+  // Pulse glow — only on hovered
+  map.addLayer({id:'glow',type:'circle',source:'projects',paint:{
+    'circle-radius':['case',['boolean',['feature-state','hover'],false],22,0],
+    'circle-color':['get','color'],
+    'circle-opacity':0.15,
+    'circle-blur':0.5,
+  }});
+
+  // Outer ring
+  map.addLayer({id:'ring',type:'circle',source:'projects',paint:{
+    'circle-radius':['case',['boolean',['feature-state','hover'],false],11,8],
+    'circle-color':'transparent',
+    'circle-stroke-width':['case',['boolean',['feature-state','hover'],false],2,1],
+    'circle-stroke-color':['get','color'],
+    'circle-stroke-opacity':['case',['boolean',['feature-state','hover'],false],0.8,0.3],
+  }});
+
+  // Core dot
+  map.addLayer({id:'dot',type:'circle',source:'projects',paint:{
+    'circle-radius':['case',['boolean',['feature-state','hover'],false],6,5],
+    'circle-color':['get','color'],
+    'circle-opacity':1,
+    'circle-stroke-width':1.5,
+    'circle-stroke-color':'rgba(10,10,10,0.7)',
+  }});
+
+  // Hover — feature-state on individual feature only
+  map.on('mousemove','dot',e=>{
+    map.getCanvas().style.cursor='pointer';
+    if(e.features.length>0){
+      const id=e.features[0].id;
+      if(hoveredId!==null&&hoveredId!==id) map.setFeatureState({source:'projects',id:hoveredId},{hover:false});
+      hoveredId=id;
+      map.setFeatureState({source:'projects',id:hoveredId},{hover:true});
+    }
+  });
+  map.on('mouseleave','dot',()=>{
+    map.getCanvas().style.cursor='';
+    if(hoveredId!==null){map.setFeatureState({source:'projects',id:hoveredId},{hover:false});hoveredId=null;}
+  });
+
+  // Click
+  map.on('click','dot',e=>{
+    if(!e.features.length) return;
+    const fid=Number(e.features[0].id);
+    const p=PROJECTS.find(x=>x.id===fid); if(!p) return;
+    activeProjectId=p.id;
+    const coords=e.features[0].geometry.coordinates.slice();
+    if(activePopup) activePopup.remove();
+    activePopup=new mapboxgl.Popup({closeButton:true,maxWidth:'330px',offset:16})
+      .setLngLat(coords).setHTML(popupHTML(p)).addTo(map);
+    activePopup.on('close',()=>{activePopup=null;activeProjectId=null;});
+  });
+
+  updateCounts(); setActive('all');
+});
+
+// ── FILTER ──
+function applyFilter(sector,fly=true){
+  activeFilter=sector; hoveredId=null;
+  if(activePopup){activePopup.remove();activePopup=null;}
+  if(map.getSource('projects')) map.getSource('projects').setData(buildGeoJSON(sector));
+  updateCounts(sector); setActive(sector);
+  if(!fly) return;
+  const ft={
+    all:{center:[44.5,26.0],zoom:5.2,pitch:28},
+    sports:{center:[46.50,24.55],zoom:8.8,pitch:48},
+    realestate:{center:[44.0,25.5],zoom:5.5,pitch:36},
+    hospitality:{center:[37.0,25.8],zoom:5.4,pitch:40},
+    culture:{center:[46.60,24.62],zoom:9.0,pitch:48},
+    transport:{center:[46.72,24.82],zoom:8.8,pitch:44},
+    energy:{center:[46.5,25.5],zoom:5.8,pitch:36},
+  };
+  map.flyTo({...(ft[sector]||ft.all),duration:1300,essential:true});
+}
+
+function setActive(sector){
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    const s=btn.dataset.sector;
+    const c=s==='all'?'#00E87A':COLORS[s];
+    btn.style.borderColor=s===sector?c:'';
+    btn.style.color=s===sector?c:'';
+  });
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>applyFilter(btn.dataset.sector));
+});
+
+map.addControl(new mapboxgl.NavigationControl({showCompass:true}),'bottom-left');
+</script>
+</body>
+</html>
