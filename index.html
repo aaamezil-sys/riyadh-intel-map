@@ -1201,8 +1201,15 @@ map.on('load',()=>{
     'circle-stroke-color':['case',['boolean',['feature-state','selected'],false],'rgba(0,232,122,0.3)','rgba(10,10,10,0.7)'],
   }});
 
+  // Invisible hit area for easier mobile tapping (20px radius)
+  map.addLayer({id:'dot-hitarea',type:'circle',source:'projects',paint:{
+    'circle-radius':20,
+    'circle-color':'transparent',
+    'circle-opacity':0,
+  }});
+
   // Hover — feature-state on individual feature only
-  map.on('mousemove','dot',e=>{
+  map.on('mousemove','dot-hitarea',e=>{
     map.getCanvas().style.cursor='pointer';
     if(e.features.length>0){
       const id=e.features[0].id;
@@ -1211,13 +1218,13 @@ map.on('load',()=>{
       map.setFeatureState({source:'projects',id:hoveredId},{hover:true});
     }
   });
-  map.on('mouseleave','dot',()=>{
+  map.on('mouseleave','dot-hitarea',()=>{
     map.getCanvas().style.cursor='';
     if(hoveredId!==null){map.setFeatureState({source:'projects',id:hoveredId},{hover:false});hoveredId=null;}
   });
 
   // Click
-  map.on('click','dot',e=>{
+  map.on('click','dot-hitarea',e=>{
     if(!e.features.length) return;
     const fid=Number(e.features[0].id);
     const p=PROJECTS.find(x=>x.id===fid); if(!p) return;
