@@ -76,21 +76,21 @@ describe('buildGeoJSON', () => {
 describe('countProjects', () => {
   it('returns total count for "all"', () => {
     const result = countProjects(PROJECTS, 'all');
-    expect(result.total).toBe(35);
-    expect(result.visible).toBe(35);
+    expect(result.total).toBe(37);
+    expect(result.visible).toBe(37);
   });
 
   it('returns correct visible count for a specific sector', () => {
     const result = countProjects(PROJECTS, 'sports');
     const expected = PROJECTS.filter(p => p.sector === 'sports').length;
     expect(result.visible).toBe(expected);
-    expect(result.total).toBe(35);
+    expect(result.total).toBe(37);
   });
 
   it('returns 0 visible for nonexistent sector', () => {
     const result = countProjects(PROJECTS, 'nonexistent');
     expect(result.visible).toBe(0);
-    expect(result.total).toBe(35);
+    expect(result.total).toBe(37);
   });
 
   it('bySector counts sum to total', () => {

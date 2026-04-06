@@ -178,8 +178,8 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 
 <!-- STATS BAR -->
 <div id="statsbar">
-  <div class="sblock"><div class="sval" id="s-projects">35</div><div class="slabel">Projects</div></div>
-  <div class="sblock"><div class="sval green">$2.13T</div><div class="slabel">Total Pipeline</div></div>
+  <div class="sblock"><div class="sval" id="s-projects">37</div><div class="slabel">Projects</div></div>
+  <div class="sblock"><div class="sval green">$2.14T</div><div class="slabel">Total Pipeline</div></div>
   <div class="sblock"><div class="sval" id="s-days">—</div><div class="slabel">Days to 2030</div></div>
   <div class="sblock"><div class="sval green">2034</div><div class="slabel">FIFA World Cup</div></div>
   <div class="sblock"><div class="sval green">2030</div><div class="slabel">World Expo</div></div>
@@ -188,7 +188,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 <!-- FILTERS -->
 <div id="filters">
   <div class="filter-label">Sector</div>
-  <button class="filter-btn" data-sector="all"><span class="fdot" style="background:var(--green)"></span>All Projects<span class="fcount" id="c-all">35</span></button>
+  <button class="filter-btn" data-sector="all"><span class="fdot" style="background:var(--green)"></span>All Projects<span class="fcount" id="c-all">37</span></button>
   <button class="filter-btn" data-sector="sports"><span class="fdot" style="background:var(--sports)"></span>Sports & Performance<span class="fcount" id="c-sports"></span></button>
   <button class="filter-btn" data-sector="realestate"><span class="fdot" style="background:var(--realestate)"></span>Real Estate & Mixed<span class="fcount" id="c-realestate"></span></button>
   <button class="filter-btn" data-sector="hospitality"><span class="fdot" style="background:var(--hospitality)"></span>Hospitality & Tourism<span class="fcount" id="c-hospitality"></span></button>
@@ -433,49 +433,67 @@ const PROJECTS = [
 
   // ── NEW PROJECTS (2025–2026 updates) ──
   {
-    id:31, sector:"realestate",
-    name:"Rou'a Al Madinah — Madinah Masterplan",
-    lat:24.4686, lng:39.6142,
-    value:"$15B", gdp:"$18B", jobs:"93,000", status:"Under Construction", completion:"2030", phase:"Phase 1 Active", contractor:"Rou'a Al Madinah Holding (PIF)",
-    description:"Mega-development surrounding the Prophet's Mosque. Hotels, residential, cultural districts, and transit upgrades to serve 30M+ pilgrims annually.",
+    id:31, sector:"hospitality",
+    name:"Rua Al Madinah",
+    lat:24.4670, lng:39.6109,
+    value:"$20B+", gdp:"$37.25B by 2030", jobs:"93,000", status:"Under Construction", completion:"2030", phase:"Phase 1 — 60% infra complete", contractor:"Rua Al Madinah Holding (PIF)",
+    description:"1.5M sqm development adjacent to the Prophet's Mosque adding 47,000 hotel rooms for 30M Umrah pilgrims annually. Fairmont residences on sale 2026.",
     image:"https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=800&q=80",
-    link:"https://www.rfrmd.com.sa"
+    link:"https://www.ruaalmadinah.com"
   },
   {
     id:32, sector:"energy",
-    name:"Ceer & Lucid EV Manufacturing Hub",
-    lat:26.2172, lng:50.1971,
-    value:"$3.4B", gdp:"$8B", jobs:"30,000", status:"Under Construction", completion:"2027", phase:"Factory Build-out", contractor:"Ceer (PIF + Foxconn) + Lucid Motors",
-    description:"Saudi Arabia's first EV manufacturing complex in King Abdullah Economic City. Ceer (mass-market) and Lucid (luxury) producing 150,000+ vehicles per year.",
+    name:"King Salman Automotive Cluster — KAEC",
+    lat:22.4487, lng:39.1336,
+    value:"$5B+", gdp:"$24.5B by 2035", jobs:"30,000+", status:"Under Construction", completion:"2026", phase:"Factory Construction", contractor:"Ceer (PIF + Foxconn) + Lucid Motors + Hyundai",
+    description:"Saudi Arabia's first automotive manufacturing hub at King Abdullah Economic City. Ceer EV plant (240K vehicles/yr) and Lucid factory, inaugurated by Crown Prince MBS Feb 2025.",
     image:"https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
-    link:"https://www.ceer.sa"
+    link:"https://ceermotors.com"
   },
   {
     id:33, sector:"hospitality",
-    name:"The Rig — Offshore Adventure Destination",
-    lat:27.0000, lng:49.7000,
-    value:"$5B", gdp:"$3.8B", jobs:"7,000", status:"Under Construction", completion:"2028", phase:"Platform Conversion", contractor:"Saudi Aramco + PIF",
-    description:"World's first tourism destination on repurposed offshore oil platforms in the Arabian Gulf. Extreme sports, hotels, restaurants, and amusement rides over open water.",
+    name:"The Rig — Offshore Adventure Platform",
+    lat:26.80, lng:50.05,
+    value:"$5B", gdp:"$3.5B+", jobs:"10,000+", status:"Under Construction", completion:"2027", phase:"Construction RFPs Awarded", contractor:"Oil Park Development Company (PIF)",
+    description:"World's first offshore tourism destination on decommissioned oil platforms with 800 hotel rooms, 70 attractions, and 11 restaurants across four interconnected rigs.",
     image:"https://images.unsplash.com/photo-1518623489648-a173ef7824f3?w=800&q=80",
-    link:"https://www.therig.sa"
+    link:"https://therig.sa"
   },
   {
-    id:34, sector:"culture",
-    name:"King Abdulaziz Centre for World Culture (Expansion)",
+    id:34, sector:"sports",
+    name:"Aramco Stadium — Al Khobar",
+    lat:26.3300, lng:50.2100,
+    value:"$1B", gdp:"$2B+", jobs:"15,000+", status:"Under Construction", completion:"2027", phase:"Active Construction", contractor:"BESIX + Al Bawani",
+    description:"46,000-seat FIFA 2034 World Cup and AFC Asian Cup 2027 venue on Al Khobar's Corniche, owned by ROSHN and operated by Saudi Aramco.",
+    image:"https://images.unsplash.com/photo-1577223625816-7546f13df25d?w=800&q=80",
+    link:"https://www.aramcostadium.com"
+  },
+  {
+    id:35, sector:"culture",
+    name:"Jeddah Historic District (Al-Balad)",
     lat:21.4225, lng:39.8262,
     value:"$2.5B", gdp:"$4B", jobs:"15,000", status:"Planning", completion:"2029", phase:"Master Planning", contractor:"Ministry of Culture + PIF",
-    description:"Jeddah Historic District UNESCO-backed cultural megaproject. Restoration of Al-Balad heritage zone with museums, galleries, boutique hotels, and creative industries hub.",
+    description:"UNESCO-backed Al-Balad heritage zone restoration with museums, galleries, boutique hotels, and creative industries hub in historic Jeddah.",
     image:"https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80",
     link:"https://www.moc.gov.sa"
   },
   {
-    id:35, sector:"transport",
+    id:36, sector:"transport",
     name:"Jeddah Rapid Transit — BRT & Metro",
     lat:21.5433, lng:39.1728,
     value:"$5.5B", gdp:"$9B", jobs:"42,000", status:"Under Construction", completion:"2029", phase:"Phase 1 — BRT Lines", contractor:"Jeddah Transit Authority",
     description:"Three-phase rapid transit system for Jeddah. BRT network plus metro lines connecting airport, downtown, waterfront, and Makkah corridor. 1.2M daily riders projected.",
     image:"https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&q=80",
     link:"https://www.jeddah.gov.sa"
+  },
+  {
+    id:37, sector:"energy",
+    name:"NEOM Oxagon DataVolt AI Factory",
+    lat:27.9833, lng:35.2000,
+    value:"$5B", gdp:"$8B+", jobs:"5,000+", status:"Planning", completion:"2028", phase:"Agreement Signed Feb 2025", contractor:"DataVolt + NEOM Company",
+    description:"1.5GW net-zero hyperscale AI data center campus in NEOM's Oxagon industrial zone, powered entirely by renewable energy. Marks NEOM's pivot toward digital infrastructure.",
+    image:"https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
+    link:"https://www.neom.com/en-us/regions/oxagon"
   }
 ];
 
@@ -485,7 +503,7 @@ const EMOJI={sports:'🏟️',realestate:'🏗️',hospitality:'🏨',culture:'�
 const SECTOR_LABELS={sports:'Sports & Performance',realestate:'Real Estate',hospitality:'Hospitality & Tourism',culture:'Culture & Entertainment',transport:'Transport & Infra',energy:'Energy & Industry'};
 
 const FEED=[
-  {label:"Total Vision 2030 Pipeline",val:"<span>$2.13T+</span> across 35 tracked projects"},
+  {label:"Total Vision 2030 Pipeline",val:"<span>$2.14T+</span> across 37 tracked projects"},
   {label:"Highest Value Project",val:"NEOM The Line — <span>$500B</span>"},
   {label:"Most Jobs Created",val:"King Salman Airport — <span>500,000</span>"},
   {label:"Nearest Deadline",val:"Sindalah Island — <span>2026</span>"},
@@ -510,9 +528,11 @@ const TICKER=[
   "NEOM Solar & Wind · <strong>$50B</strong> clean energy commitment by 2030",
   "Saudi Aramco Expansion · <strong>$40B</strong> upstream investment 2024–2028",
   "Rou'a Al Madinah · <strong>$15B</strong> · Holy City masterplan · 30M pilgrims/year",
-  "Ceer EV Factory · Saudi Arabia's first electric vehicle · <strong>$3.4B</strong>",
+  "King Salman Automotive Cluster · Ceer + Lucid EV factories · <strong>$5B+</strong> · KAEC",
+  "Aramco Stadium · Al Khobar · FIFA 2034 + AFC Asian Cup 2027 · <strong>$1B</strong>",
   "The Rig · World's first offshore tourism platform · <strong>$5B</strong>",
   "Jeddah Rapid Transit · BRT & Metro · <strong>$5.5B</strong> · 1.2M daily riders",
+  "NEOM DataVolt AI Factory · 1.5GW net-zero data center · <strong>$5B</strong>",
   "HarakaMed · AI markerless motion analysis · ahmedmezil.com",
   "Riyadh Intelligence Platform · riyadh.ahmedmezil.com",
 ];
