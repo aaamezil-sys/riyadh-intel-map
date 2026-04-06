@@ -161,53 +161,53 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 .p-news-meta{font-size:7px;color:var(--muted);margin-top:2px}
 .p-news-empty{font-size:8px;color:var(--dim);font-style:italic;padding:4px 0}
 
+/* ── MOBILE BOTTOM SHEET ── */
+#mobile-sheet{
+  display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;
+  max-height:70vh;background:rgba(10,10,10,0.98);
+  border-top:1px solid var(--border);border-radius:14px 14px 0 0;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  backdrop-filter:blur(24px);
+  transform:translateY(100%);transition:transform 0.3s ease;
+}
+#mobile-sheet.open{display:block;transform:translateY(0)}
+#mobile-sheet .sheet-handle{width:36px;height:4px;background:var(--dim);border-radius:2px;margin:10px auto 6px}
+#mobile-sheet .sheet-close{position:absolute;top:8px;right:12px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;z-index:2;padding:4px 8px}
+#mobile-sheet .sheet-close:hover{color:#fff}
+#mobile-sheet .p-img-wrap{height:120px}
+#mobile-sheet .pname{font-size:13px}
+#mobile-sheet .p-insight{font-size:9px;padding:7px 10px}
+#mobile-sheet .pmeta{gap:3px 8px}
+#mobile-sheet .pmk{font-size:7px}
+#mobile-sheet .pmv{font-size:10px}
+#mobile-sheet .p-link{padding:8px;font-size:9px}
+
 /* ── MOBILE ── */
 @media(max-width:600px){
-  /* Shrink header */
   #header{padding:10px 14px 0}
   .brand{font-size:15px}
   .back-link{font-size:8px}
-
-  /* Stats bar */
   #statsbar{top:58px;left:14px;right:14px;flex-wrap:wrap;gap:0}
   .sblock{padding-right:12px;margin-right:12px}
   .sval{font-size:12px}
   .slabel{font-size:7px}
-
-  /* Filters — smaller, scrollable */
   #filters{top:94px;left:14px;gap:2px}
   .filter-btn{padding:5px 9px;font-size:9px}
   .fcount{font-size:8px;padding-left:8px}
-
-  /* Clock */
   #clock{top:10px;right:14px}
   .clock-time{font-size:11px}
 
-  /* Popup — full width on mobile */
-  .mapboxgl-popup{max-width:calc(100vw - 24px)!important;left:12px!important;right:12px!important}
-  .mapboxgl-popup-content{max-height:65vh!important;overflow-y:auto!important}
-  .p-img-wrap{height:100px}
-  .pname{font-size:12px}
-  .pmeta{gap:3px 6px}
-  .pmk{font-size:6px}
-  .pmv{font-size:9px}
-  .p-actions{flex-wrap:wrap}
-  .p-link{padding:6px;font-size:8px}
-  .p-insight{font-size:8px;padding:6px 9px}
-  .p-news-link{font-size:8px}
-  .p-news-meta{font-size:6px}
+  /* Hide default Mapbox popup on mobile — use bottom sheet instead */
+  .mapboxgl-popup{display:none!important}
 
-  /* Intel Feed — collapsed by default, above zoom */
+  /* Intel Feed */
   #metrics{width:170px;bottom:110px;left:14px}
   #metrics.collapsed #m-items{display:none}
   #metrics.collapsed .mpanel-toggle{transform:rotate(-90deg)}
   #metrics.collapsed .mpanel-hdr{border-bottom:1px solid transparent}
 
-  /* Author */
   #author{bottom:46px;right:12px}
   #author .author-name{font-size:8px}
-
-  /* Ticker */
   #ticker{height:30px}
   .ttag{font-size:6px;padding:0 10px}
   .titem{font-size:8px;padding:0 18px}
@@ -248,6 +248,13 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
   <button class="filter-btn" data-sector="culture"><span class="fdot" style="background:var(--culture)"></span>Culture & Entertainment<span class="fcount" id="c-culture"></span></button>
   <button class="filter-btn" data-sector="transport"><span class="fdot" style="background:var(--transport)"></span>Transport & Infra<span class="fcount" id="c-transport"></span></button>
   <button class="filter-btn" data-sector="energy"><span class="fdot" style="background:var(--energy)"></span>Energy & Industry<span class="fcount" id="c-energy"></span></button>
+</div>
+
+<!-- MOBILE BOTTOM SHEET -->
+<div id="mobile-sheet">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" onclick="closeMobileSheet()">&times;</button>
+  <div id="sheet-content"></div>
 </div>
 
 <!-- METRICS PANEL (collapsible) -->
@@ -764,20 +771,35 @@ map.on('load',()=>{
     const p=PROJECTS.find(x=>x.id===fid); if(!p) return;
     activeProjectId=p.id;
     const coords=e.features[0].geometry.coordinates.slice();
-    if(activePopup) activePopup.remove();
-    activePopup=new mapboxgl.Popup({closeButton:true,maxWidth:'330px',offset:16})
-      .setLngLat(coords).setHTML(popupHTML(p)).addTo(map);
-    if(window.innerWidth<=600) document.getElementById('metrics').classList.add('collapsed');
-    activePopup.on('close',()=>{activePopup=null;activeProjectId=null;});
+
+    if(window.innerWidth<=600){
+      // Mobile: use bottom sheet
+      document.getElementById('sheet-content').innerHTML=popupHTML(p);
+      document.getElementById('mobile-sheet').classList.add('open');
+      document.getElementById('metrics').classList.add('collapsed');
+    } else {
+      // Desktop: use Mapbox popup
+      if(activePopup) activePopup.remove();
+      activePopup=new mapboxgl.Popup({closeButton:true,maxWidth:'330px',offset:16})
+        .setLngLat(coords).setHTML(popupHTML(p)).addTo(map);
+      activePopup.on('close',()=>{activePopup=null;activeProjectId=null;});
+    }
   });
 
   updateCounts(); setActive('all');
 });
 
+// ── MOBILE SHEET ──
+function closeMobileSheet(){
+  document.getElementById('mobile-sheet').classList.remove('open');
+  activeProjectId=null;
+}
+
 // ── FILTER ──
 function applyFilter(sector,fly=true){
   activeFilter=sector; hoveredId=null;
   if(activePopup){activePopup.remove();activePopup=null;}
+  closeMobileSheet();
   if(map.getSource('projects')) map.getSource('projects').setData(buildGeoJSON(sector));
   updateCounts(sector); setActive(sector);
   if(!fly) return;
