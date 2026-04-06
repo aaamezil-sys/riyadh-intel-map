@@ -127,6 +127,58 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 .mval{font-size:11px;font-weight:600;color:#fff;line-height:1.2}
 .mval span{color:var(--green)}
 
+/* ── COMPARE BAR ── */
+#compare-bar{
+  display:none;position:fixed;bottom:36px;left:50%;transform:translateX(-50%);z-index:90;
+  background:rgba(10,10,10,0.95);border:1px solid var(--green);border-radius:8px;
+  padding:8px 14px;backdrop-filter:blur(14px);
+  align-items:center;gap:10px;
+}
+#compare-bar.visible{display:flex}
+.compare-chips{display:flex;gap:6px;flex-wrap:wrap}
+.compare-chip{
+  display:flex;align-items:center;gap:5px;padding:4px 10px;
+  background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:4px;
+  font-size:9px;color:#fff;font-family:'Poppins',sans-serif;
+}
+.compare-chip .chip-x{cursor:pointer;color:var(--muted);font-size:11px;margin-left:2px}
+.compare-chip .chip-x:hover{color:#fff}
+.compare-chip .chip-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+#compare-btn{
+  padding:6px 14px;background:var(--green);color:#000;border:none;border-radius:4px;
+  font-family:'Poppins',sans-serif;font-size:9px;font-weight:700;cursor:pointer;
+  letter-spacing:0.04em;white-space:nowrap;
+}
+#compare-btn:hover{background:#00ff88}
+#compare-btn:disabled{opacity:0.4;cursor:not-allowed}
+
+/* Compare panel */
+#compare-panel{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(5,5,5,0.97);backdrop-filter:blur(20px);
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+#compare-panel.open{display:block}
+.cp-header{
+  position:sticky;top:0;z-index:1;padding:16px 22px;
+  background:rgba(10,10,10,0.98);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.cp-title{font-size:14px;font-weight:700;color:#fff}
+.cp-close{background:none;border:1px solid var(--border);border-radius:4px;color:var(--muted);font-size:12px;padding:6px 12px;cursor:pointer;font-family:'Poppins',sans-serif}
+.cp-close:hover{color:#fff;border-color:var(--border2)}
+.cp-grid{display:grid;gap:0;padding:0 22px 40px}
+.cp-row{display:grid;border-bottom:1px solid var(--border);min-height:38px}
+.cp-row.header{position:sticky;top:52px;z-index:1;background:rgba(10,10,10,0.98)}
+.cp-cell{padding:10px 12px;font-size:10px;color:#fff;display:flex;align-items:center}
+.cp-cell.label{color:var(--muted);font-size:8px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;background:rgba(255,255,255,0.02)}
+.cp-cell.name{font-weight:700;font-size:12px}
+.cp-cell .cell-tag{
+  display:inline-block;padding:2px 7px;border-radius:3px;font-size:8px;font-weight:600;
+  letter-spacing:0.06em;text-transform:uppercase;
+}
+.cp-cell.highlight{color:var(--green);font-weight:700}
+
 /* ── AUTHOR ── */
 #author{position:absolute;bottom:50px;right:22px;z-index:20;text-align:right;pointer-events:none}
 .author-name{font-size:9px;font-weight:500;color:var(--dim);letter-spacing:0.04em}
@@ -271,6 +323,21 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 <!-- AUTHOR -->
 <div id="author">
   <div class="author-name">Built by <a href="https://ahmedmezil.com" target="_blank" rel="noopener">Ahmed Mezil</a></div>
+</div>
+
+<!-- COMPARE BAR -->
+<div id="compare-bar">
+  <div class="compare-chips" id="compare-chips"></div>
+  <button id="compare-btn" disabled onclick="openCompare()">Compare</button>
+</div>
+
+<!-- COMPARE PANEL -->
+<div id="compare-panel">
+  <div class="cp-header">
+    <div class="cp-title">Project Comparison</div>
+    <button class="cp-close" onclick="closeCompare()">&#10005; Close</button>
+  </div>
+  <div class="cp-grid" id="cp-grid"></div>
 </div>
 
 <!-- TICKER -->
@@ -680,6 +747,7 @@ function popupHTML(p){
       <div class="p-actions">
         ${p.link?`<a class="p-link primary" href="${p.link}" target="_blank" rel="noopener">↗ Official Source</a>`:''}
         <a class="p-link" href="https://www.google.com/maps?q=${p.lat},${p.lng}" target="_blank" rel="noopener">📍 Maps</a>
+        <a class="p-link" href="#" onclick="event.preventDefault();addToCompare(${p.id})">⚖ Compare</a>
       </div>
     </div>
     ${newsHTML(p.id)}`;
@@ -832,6 +900,90 @@ map.addControl(new mapboxgl.NavigationControl({showCompass:true}),'bottom-left')
 
 // Auto-collapse feed on mobile
 if(window.innerWidth<=600) document.getElementById('metrics').classList.add('collapsed');
+
+// ── COMPARISON TOOL ──
+let compareList = [];
+
+function addToCompare(id){
+  if(compareList.includes(id)) return;
+  if(compareList.length>=3){ alert('Max 3 projects. Remove one first.'); return; }
+  compareList.push(id);
+  updateCompareBar();
+  if(activePopup){activePopup.remove();activePopup=null;}
+  closeMobileSheet();
+}
+
+function removeFromCompare(id){
+  compareList=compareList.filter(i=>i!==id);
+  updateCompareBar();
+}
+
+function updateCompareBar(){
+  const bar=document.getElementById('compare-bar');
+  const chips=document.getElementById('compare-chips');
+  const btn=document.getElementById('compare-btn');
+  if(compareList.length===0){ bar.classList.remove('visible'); return; }
+  bar.classList.add('visible');
+  chips.innerHTML=compareList.map(id=>{
+    const p=PROJECTS.find(x=>x.id===id);
+    const c=COLORS[p.sector]||'#fff';
+    return `<div class="compare-chip">
+      <span class="chip-dot" style="background:${c}"></span>
+      ${p.name.length>25?p.name.slice(0,25)+'…':p.name}
+      <span class="chip-x" onclick="removeFromCompare(${id})">✕</span>
+    </div>`;
+  }).join('');
+  btn.disabled=compareList.length<2;
+}
+
+function openCompare(){
+  if(compareList.length<2) return;
+  const projects=compareList.map(id=>PROJECTS.find(x=>x.id===id));
+  const grid=document.getElementById('cp-grid');
+  grid.style.gridTemplateColumns=`120px repeat(${projects.length},1fr)`;
+
+  const rows=[
+    {label:'Project',key:'name',isHeader:true},
+    {label:'Sector',key:'sector',format:v=>SECTOR_LABELS[v]||v},
+    {label:'Investment',key:'value'},
+    {label:'GDP Contribution',key:'gdp'},
+    {label:'Jobs Created',key:'jobs'},
+    {label:'Status',key:'status',tag:true},
+    {label:'Completion',key:'completion'},
+    {label:'Phase',key:'phase'},
+    {label:'Contractor',key:'contractor'},
+  ];
+
+  let html='';
+  rows.forEach(row=>{
+    const cls=row.isHeader?'cp-row header':'cp-row';
+    html+=`<div class="${cls}" style="grid-template-columns:120px repeat(${projects.length},1fr)">`;
+    html+=`<div class="cp-cell label">${row.label}</div>`;
+    projects.forEach(p=>{
+      let val=p[row.key]||'—';
+      if(row.format) val=row.format(val);
+      if(row.isHeader){
+        const c=COLORS[p.sector]||'#fff';
+        html+=`<div class="cp-cell name" style="color:${c}">${val}</div>`;
+      } else if(row.tag){
+        const c=val.includes('Under')?'#FFB800':val.includes('Operational')?'#00E87A':'#6aa2f0';
+        html+=`<div class="cp-cell"><span class="cell-tag" style="background:${c}22;color:${c}">${val}</span></div>`;
+      } else {
+        html+=`<div class="cp-cell">${val}</div>`;
+      }
+    });
+    html+=`</div>`;
+  });
+
+  grid.innerHTML=html;
+  document.getElementById('compare-panel').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeCompare(){
+  document.getElementById('compare-panel').classList.remove('open');
+  document.body.style.overflow='';
+}
 </script>
 </body>
 </html>
