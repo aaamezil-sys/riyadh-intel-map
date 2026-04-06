@@ -204,7 +204,8 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 /* ── TICKER ── */
 #ticker{position:absolute;bottom:0;left:0;right:0;z-index:20;height:36px;background:rgba(10,10,10,0.97);border-top:1px solid var(--border);display:flex;align-items:center;overflow:hidden}
 .ttag{flex-shrink:0;padding:0 14px;font-size:8px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#000;background:var(--green);height:100%;display:flex;align-items:center}
-.ttrack{display:flex;animation:ticker 55s linear infinite;white-space:nowrap}
+.ttrack{display:flex;animation:ticker 55s linear infinite;white-space:nowrap;cursor:grab}
+#ticker:hover .ttrack{animation-play-state:paused}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .titem{font-size:10px;font-weight:400;padding:0 26px;color:var(--muted);display:flex;align-items:center;gap:6px}
 .titem strong{color:#fff;font-weight:600}
@@ -524,8 +525,9 @@ function applyLang(){
   document.querySelector('.cp-title').textContent=t.compareTitle;
   document.querySelector('.cp-close').innerHTML=`&#10005; ${t.close}`;
 
-  // Ticker tag
+  // Ticker — rebuild with correct language
   document.querySelector('.ttag').textContent=t.vision2030;
+  if(typeof buildTicker==='function') buildTicker();
 
   // Clock
   updateClock();
@@ -560,37 +562,49 @@ const PROJECTS = [
   // ── SPORTS ──
   {id:1,sector:"sports",name:"Prince Mohammed bin Salman Stadium (Qiddiya)",
     lat:24.4949,lng:46.2047,value:"$8B",gdp:"$9.8B GDP contribution",jobs:"185,000",status:"Under Construction",completion:"2029",phase:"Phase 1",contractor:"FCC Construcción + Nesma & Partners",
+    nameAr:"استاد الأمير محمد بن سلمان (القدية)",
     description:"46,979-seat FIFA 2034 World Cup venue built on the edge of Tuwaiq cliffs. World's first stadium with retractable roof, movable pitch, and full LED wall.",
-    image:"https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800&q=80",
+    descAr:"ملعب بسعة 46,979 مقعد لكأس العالم 2034 على حافة جرف طويق. أول ملعب في العالم بسقف قابل للسحب وأرضية متحركة وشاشة LED كاملة.",
+    image:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Qiddiya_Saudi_Arabia.jpg/800px-Qiddiya_Saudi_Arabia.jpg",
     link:"https://qiddiya.com"
   },
   {id:2,sector:"sports",name:"King Fahd International Stadium Upgrade",
     lat:24.7141,lng:46.7189,value:"$500M",gdp:"Direct FIFA 2034 asset",jobs:"12,000",status:"Planning",completion:"2033",phase:"Design",contractor:"TBD — MOH tender expected 2026",
+    nameAr:"تطوير استاد الملك فهد الدولي",
     description:"Flagship national stadium hosting FIFA 2034 matches. Seating capacity upgrade, cooling systems overhaul, and sports science infrastructure integration.",
+    descAr:"الملعب الوطني الرئيسي لاستضافة مباريات كأس العالم 2034. ترقية السعة وأنظمة التبريد والبنية التحتية للعلوم الرياضية.",
     image:"https://upload.wikimedia.org/wikipedia/commons/c/cb/KingFahdInternationalStadium.jpg",
     link:"https://www.saff.com.sa"
   },
   {id:3,sector:"sports",name:"Sports Boulevard — Riyadh",
     lat:24.6900,lng:46.6950,value:"$3.8B",gdp:"$5.2B",jobs:"94,000",status:"Under Construction",completion:"2030",phase:"Phase 2 of 4",contractor:"Multiple — Royal Commission for Riyadh City",
+    nameAr:"بوليفارد الرياضة — الرياض",
     description:"135km linear sports and wellness corridor cutting through Riyadh. Cycling, athletics, padel, aquatics, outdoor fitness, and commercial retail zones.",
-    image:"https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&q=80",
+    descAr:"ممر رياضي خطي بطول 135 كم عبر الرياض. دراجات، ألعاب قوى، بادل، رياضات مائية، لياقة بدنية، ومناطق تجارية.",
+    image:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Sports_Boulevard_Riyadh_Rendering.jpg/800px-Sports_Boulevard_Riyadh_Rendering.jpg",
     link:"https://sportsblvd.com.sa"
   },
   {id:4,sector:"sports",name:"Prince Faisal bin Fahd Olympic Complex",
     lat:24.7248,lng:46.6739,value:"$1.2B",gdp:"$2.1B",jobs:"8,500",status:"Expansion",completion:"2028",phase:"Expansion Phase",contractor:"Saudi Binladin Group",
+    nameAr:"مجمع الأمير فيصل بن فهد الأولمبي",
     description:"National Olympic training complex — aquatics, athletics, gymnastics, multi-sport halls. Elite athlete preparation hub for KSA national teams.",
-    image:"",
+    descAr:"مجمع تدريب أولمبي وطني — سباحة، ألعاب قوى، جمباز، وصالات رياضية متعددة. مركز إعداد النخبة الرياضية السعودية.",
+    image:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Prince_Faisal_Bin_Fahd_Stadium.jpg/800px-Prince_Faisal_Bin_Fahd_Stadium.jpg",
     link:"https://www.mof.gov.sa"
   },
   {id:5,sector:"sports",name:"King Abdullah Sports City — Jeddah",
     lat:21.6437,lng:39.1376,value:"$4B",gdp:"$6.5B",jobs:"47,000",status:"Operational + Expanding",completion:"2026",phase:"Operational",contractor:"Operational — SCC",
+    nameAr:"مدينة الملك عبدالله الرياضية — جدة",
     description:"70,000-seat stadium with performance facilities, hosting Saudi Pro League, international boxing, and major events. Now expanding with new sports science centre.",
+    descAr:"ملعب بسعة 70,000 مقعد يستضيف الدوري السعودي والملاكمة الدولية والفعاليات الكبرى. يتوسع حالياً بمركز علوم رياضية جديد.",
     image:"https://images.unsplash.com/photo-1459865264687-595d652de67e?w=800&q=80",
     link:"https://www.kasa.com.sa"
   },
   {id:6,sector:"sports",name:"New Murabba Arena",
     lat:24.7170,lng:46.6180,value:"$50B",gdp:"$48B",jobs:"334,000",status:"Under Construction",completion:"2032",phase:"Phase 1",contractor:"Multiple NEOM-adjacent contractors",
+    nameAr:"أرينا المربع الجديد",
     description:"45,000-seat events arena at the heart of New Murabba district. Hosts international concerts, boxing, basketball, and cultural events alongside The Mukaab.",
+    descAr:"صالة فعاليات بسعة 45,000 مقعد في قلب حي المربع الجديد. تستضيف حفلات عالمية وملاكمة وكرة سلة وفعاليات ثقافية بجانب المكعب.",
     image:"https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80",
     link:"https://newmurabba.com"
   },
@@ -598,69 +612,91 @@ const PROJECTS = [
   // ── REAL ESTATE ──
   {id:7,sector:"realestate",name:"The Mukaab — New Murabba",
     lat:24.7155,lng:46.6155,value:"$8B",gdp:"Included in New Murabba $48B",jobs:"50,000+",status:"Under Construction",completion:"2030",phase:"Core Structure",contractor:"TBD — PIF direct",
+    nameAr:"المكعب — المربع الجديد",
     description:"400m × 400m × 400m cube structure — one of the world's most ambitious architectural feats. Immersive digital environment inside with 20 city blocks worth of internal space.",
+    descAr:"هيكل مكعب بأبعاد 400×400×400 متر — أحد أكثر الإنجازات المعمارية طموحاً في العالم. بيئة رقمية غامرة بداخله تعادل 20 حياً سكنياً.",
     image:"https://upload.wikimedia.org/wikipedia/commons/0/04/Mukaab_Illustration.png",
     link:"https://newmurabba.com"
   },
   {id:8,sector:"realestate",name:"Jeddah Tower (Kingdom Tower)",
     lat:21.5433,lng:39.1728,value:"$1.5B",gdp:"$2.3B",jobs:"18,000",status:"Under Construction — Resumed",completion:"2028",phase:"Structure — ~40% complete",contractor:"Saudi Binladin Group",
+    nameAr:"برج جدة (برج المملكة)",
     description:"World's first 1km-tall skyscraper. 200+ floors of luxury residences, offices, hotel (Four Seasons), and observation deck. Under construction since 2013, resumed 2023.",
+    descAr:"أول ناطحة سحاب بارتفاع كيلومتر في العالم. أكثر من 200 طابق من الشقق الفاخرة والمكاتب والفنادق وشرفة مراقبة.",
     image:"https://upload.wikimedia.org/wikipedia/commons/6/65/Jeddah_Tower_August_2019_S.Nitzold.jpg",
     link:"https://jeddahtower.com"
   },
   {id:9,sector:"realestate",name:"ROSHN — National Communities",
     lat:24.8500,lng:46.8000,value:"$5B+",gdp:"$12B",jobs:"120,000",status:"Rolling Delivery",completion:"2030",phase:"Multiple Phases Active",contractor:"ROSHN Group (PIF)",
+    nameAr:"روشن — المجتمعات الوطنية",
     description:"PIF-backed national developer delivering 400,000+ homes across Saudi cities. Integrated communities with schools, retail, parks, and healthcare in all major metros.",
+    descAr:"مطور وطني مدعوم من صندوق الاستثمارات العامة يبني أكثر من 400,000 وحدة سكنية عبر المدن السعودية مع مدارس ومتاجر وحدائق ورعاية صحية.",
     image:"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80",
     link:"https://www.roshn.sa"
   },
   {id:10,sector:"realestate",name:"Trojena — NEOM Ski Resort",
     lat:28.0833,lng:35.4167,value:"$5B",gdp:"$7B tourism",jobs:"30,000",status:"Under Construction",completion:"2027",phase:"Phase 1 — Ski Village",contractor:"NEOM Company",
+    nameAr:"تروجينا — منتجع التزلج في نيوم",
     description:"Year-round mountain destination with outdoor ski slopes, lakes, nature reserve, and adventure sports. Hosting Asian Winter Games 2029. Altitude: 1,500–2,600m.",
+    descAr:"وجهة جبلية على مدار العام مع منحدرات تزلج وبحيرات ومحمية طبيعية ورياضات مغامرة. تستضيف دورة الألعاب الآسيوية الشتوية 2029.",
     image:"https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&q=80",
     link:"https://www.neom.com/en-us/regions/trojena"
   },
   {id:11,sector:"realestate",name:"Expo 2030 Riyadh Site",
     lat:24.7136,lng:46.6753,value:"$7.8B",gdp:"$38B during event",jobs:"300,000",status:"Under Construction",completion:"2030",phase:"Site Preparation",contractor:"Royal Commission for Riyadh City",
+    nameAr:"موقع إكسبو 2030 الرياض",
     description:"World Expo 2030 hosted in Riyadh. 50M projected visitors over 6 months. Theme: 'The Era of Change: Together for a Foresighted Tomorrow.' 180 participating nations.",
-    image:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
+    descAr:"استضافة إكسبو العالمي 2030 في الرياض. 50 مليون زائر متوقع خلال 6 أشهر. شعار: عصر التغيير. 180 دولة مشاركة.",
+    image:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Expo_2030_Riyadh_Logo.svg/800px-Expo_2030_Riyadh_Logo.svg.png",
     link:"https://expo2030riyadh.com"
   },
   {id:12,sector:"realestate",name:"Oxagon — NEOM Industrial Port",
     lat:27.9833,lng:35.2000,value:"$7B",gdp:"$14B",jobs:"90,000",status:"Phase 1 Active",completion:"2030",phase:"Phase 1",contractor:"NEOM Company + partners",
+    nameAr:"أوكساغون — ميناء نيوم الصناعي",
     description:"World's largest floating industrial complex. Green hydrogen production, advanced manufacturing, and logistics port. Eight-sided structure on the Red Sea.",
-    image:"",
+    descAr:"أكبر مجمع صناعي عائم في العالم. إنتاج الهيدروجين الأخضر والتصنيع المتقدم والخدمات اللوجستية على البحر الأحمر.",
+    image:"https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/NEOM_Oxagon.jpg/800px-NEOM_Oxagon.jpg",
     link:"https://www.neom.com/en-us/regions/oxagon"
   },
 
   // ── HOSPITALITY ──
   {id:13,sector:"hospitality",name:"NEOM — The Line",
     lat:28.0000,lng:35.2000,value:"$500B",gdp:"$48B phase 1",jobs:"380,000",status:"Under Construction",completion:"2035+",phase:"Phase 1 — 2.4km by 2030",contractor:"Multiple — NEOM Company",
+    nameAr:"نيوم — ذا لاين",
     description:"170km linear cognitive city with no roads, 100% renewable energy, AI-managed systems, and mirrored exterior. Phase 1 (2.4km) delivering by 2030.",
+    descAr:"مدينة خطية ذكية بطول 170 كم بدون طرق وطاقة متجددة 100% وأنظمة ذكاء اصطناعي. المرحلة الأولى 2.4 كم بحلول 2030.",
     image:"https://upload.wikimedia.org/wikipedia/commons/c/ca/Line_Progress_October_2022.png",
     link:"https://www.neom.com/en-us/regions/theline"
   },
   {id:14,sector:"hospitality",name:"Red Sea Project",
     lat:22.0000,lng:38.5000,value:"$28B",gdp:"$22B",jobs:"70,000",status:"Phase 1 Operational",completion:"2030",phase:"Phase 1 Open",contractor:"Red Sea Global (RSG)",
+    nameAr:"مشروع البحر الأحمر",
     description:"Luxury island resort archipelago — 50 hotels, 8,000 hotel keys, private airport, and 200km of pristine Red Sea coastline. Zero waste, carbon-neutral policy.",
+    descAr:"أرخبيل منتجعات فاخرة — 50 فندق و8,000 غرفة ومطار خاص و200 كم من ساحل البحر الأحمر. سياسة صفر نفايات ومحايدة للكربون.",
     image:"https://images.unsplash.com/photo-1439130490301-25e322d88054?w=800&q=80",
     link:"https://www.theredsea.sa"
   },
   {id:15,sector:"hospitality",name:"Amaala — Triple Bay",
     lat:28.3000,lng:35.1500,value:"$12B",gdp:"$9B",jobs:"14,000",status:"Under Construction",completion:"2028",phase:"Phase 1",contractor:"Red Sea Global (RSG)",
+    nameAr:"أمالا — الخليج الثلاثي",
     description:"Ultra-luxury wellness and yachting destination. 3 villages, 25km of coastline, 3,000 hotel keys. 'The Riviera of the Middle East.' Performance wellness as core product.",
-    image:"",
+    descAr:"وجهة فاخرة للعافية واليخوت. 3 قرى و25 كم من الساحل و3,000 غرفة فندقية. ريفييرا الشرق الأوسط.",
+    image:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Amaala_Triple_Bay.jpg/800px-Amaala_Triple_Bay.jpg",
     link:"https://www.amaala.com"
   },
   {id:16,sector:"hospitality",name:"Sindalah Island — NEOM",
     lat:28.1700,lng:35.4300,value:"$4B",gdp:"$3.5B",jobs:"3,500",status:"Opening 2025–26",completion:"2026",phase:"Final Fit-Out",contractor:"NEOM Company",
+    nameAr:"جزيرة سندالة — نيوم",
     description:"Luxury yacht hub — 3 resorts, 86 piers, 50+ luxury brands, fully pedestrian. First NEOM destination to open. Gateway to Red Sea exploration.",
+    descAr:"مرسى يخوت فاخر — 3 منتجعات و86 رصيف وأكثر من 50 علامة تجارية فاخرة. أول وجهة في نيوم تفتح أبوابها.",
     image:"https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80",
     link:"https://www.neom.com/en-us/regions/sindalah"
   },
   {id:17,sector:"hospitality",name:"Diriyah Gate Cultural District",
     lat:24.7300,lng:46.5712,value:"$62B",gdp:"$14.5B commissioned",jobs:"55,000",status:"Phase 1 Delivering",completion:"2030",phase:"Phase 1 — Multiple open",contractor:"Diriyah Company (PIF)",
+    nameAr:"بوابة الدرعية — الحي الثقافي",
     description:"UNESCO World Heritage site transformed into global destination. At-Turaif district, luxury hotels, cultural museums, restaurants, and residential. Targets 27M visitors/year.",
+    descAr:"موقع تراث عالمي لليونسكو يتحول إلى وجهة عالمية. حي الطريف وفنادق فاخرة ومتاحف ومطاعم. يستهدف 27 مليون زائر سنوياً.",
     image:"https://upload.wikimedia.org/wikipedia/commons/4/49/At-Turaif_District_of_Diriyah%2C_Saudi_Arabia.jpg",
     link:"https://www.diriyah.sa"
   },
@@ -668,25 +704,33 @@ const PROJECTS = [
   // ── CULTURE ──
   {id:18,sector:"culture",name:"King Salman Park",
     lat:24.7500,lng:46.6500,value:"$23B",gdp:"$25B",jobs:"140,000",status:"Phase 1 Open",completion:"2030",phase:"Phase 1 Open",contractor:"Royal Commission for Riyadh City",
+    nameAr:"حديقة الملك سلمان",
     description:"World's largest urban park — 13.4km² in central Riyadh. Museums, performing arts, sports, F&B, cultural venues, and green corridors. 10M visitors expected annually.",
+    descAr:"أكبر حديقة حضرية في العالم — 13.4 كم² في وسط الرياض. متاحف وفنون أدائية ورياضة ومطاعم ومساحات خضراء. 10 ملايين زائر سنوياً.",
     image:"https://upload.wikimedia.org/wikipedia/commons/0/08/KSP_Landscape.jpg",
     link:"https://kingsalmanpark.sa"
   },
   {id:19,sector:"culture",name:"Qiddiya Entertainment City",
     lat:24.5100,lng:46.2200,value:"$8B",gdp:"$9.8B",jobs:"185,000",status:"Phase 1 Delivering",completion:"2028",phase:"Six Flags Open Dec 2025",contractor:"Qiddiya Investment Company",
+    nameAr:"مدينة القدية الترفيهية",
     description:"Saudi Arabia's entertainment capital. Six Flags open Dec 2025. 12 theme parks, 400+ attractions, performing arts centre, Formula E circuit. 500,000 future residents.",
+    descAr:"عاصمة الترفيه السعودية. سكس فلاقز تفتح ديسمبر 2025. 12 مدينة ملاهي و400 لعبة ومركز فنون أدائية وحلبة فورمولا إي.",
     image:"https://images.unsplash.com/photo-1563089145-599997674d42?w=800&q=80",
     link:"https://qiddiya.com"
   },
   {id:20,sector:"culture",name:"Riyadh Season — Annual Mega-Events",
     lat:24.6800,lng:46.7200,value:"$1B+ annual",gdp:"$4B annual",jobs:"40,000 seasonal",status:"Annual — Expanding",completion:"Recurring",phase:"Season 6 (2025–26)",contractor:"General Entertainment Authority",
+    nameAr:"موسم الرياض — فعاليات سنوية كبرى",
     description:"Annual mega-event season: boxing (Fury, Joshua, Usyk), WWE, F1 Experiences, concerts, and international sports. Expanding venues and duration each year.",
-    image:"",
+    descAr:"موسم فعاليات ضخم سنوي: ملاكمة وWWE وتجارب فورمولا 1 وحفلات ورياضات دولية. توسع في الأماكن والمدة كل عام.",
+    image:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Boulevard_Riyadh_City_2022.jpg/800px-Boulevard_Riyadh_City_2022.jpg",
     link:"https://www.riyadhseason.sa"
   },
   {id:21,sector:"culture",name:"Ithra — King Abdulaziz Center",
     lat:26.3090,lng:50.1130,value:"$2B",gdp:"$3.5B",jobs:"8,000",status:"Operational",completion:"Ongoing",phase:"Operational",contractor:"Saudi Aramco",
+    nameAr:"إثراء — مركز الملك عبدالعزيز الثقافي العالمي",
     description:"Saudi Aramco's cultural and innovation campus in Dhahran. Museum, cinema, makerspace, library, and talent development programs. 1.5M visitors/year.",
+    descAr:"حرم أرامكو الثقافي والابتكاري في الظهران. متحف وسينما ومختبر إبداع ومكتبة وبرامج تطوير المواهب. 1.5 مليون زائر سنوياً.",
     image:"https://upload.wikimedia.org/wikipedia/commons/9/9f/King_Abdulaziz_Center_for_World_Culture_10.jpg",
     link:"https://www.ithra.com"
   },
@@ -694,39 +738,51 @@ const PROJECTS = [
   // ── TRANSPORT ──
   {id:22,sector:"transport",name:"King Salman International Airport",
     lat:24.9576,lng:46.7018,value:"$147B",gdp:"$112B",jobs:"500,000",status:"Under Construction",completion:"2030",phase:"Phase 1 — Terminal 1",contractor:"KAFD + RCRC managed",
+    nameAr:"مطار الملك سلمان الدولي",
     description:"World's largest airport terminal replacing KKIA. 185M passengers/year capacity. 6 runways, dedicated cargo city, and integrated transit hub. 57km² total site.",
-    image:"https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80",
+    descAr:"أكبر صالة مطار في العالم بديلة لمطار الملك خالد. سعة 185 مليون مسافر سنوياً و6 مدارج ومدينة شحن ومحطة نقل متكاملة.",
+    image:"https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/King_Khalid_International_Airport.jpg/800px-King_Khalid_International_Airport.jpg",
     link:"https://www.gaca.gov.sa"
   },
   {id:23,sector:"transport",name:"Riyadh Metro — Full Network",
     lat:24.6877,lng:46.7219,value:"$22B",gdp:"$18B",jobs:"44,000",status:"Operational",completion:"2024",phase:"Fully Operational",contractor:"Multiple consortia",
+    nameAr:"مترو الرياض — الشبكة الكاملة",
     description:"176 stations, 6 lines, 176km — one of the world's longest metro networks. Connects major districts, giga-projects, and airports across Riyadh.",
+    descAr:"176 محطة و6 خطوط و176 كم — من أطول شبكات المترو في العالم. يربط الأحياء الرئيسية والمشاريع العملاقة والمطارات.",
     image:"https://upload.wikimedia.org/wikipedia/commons/1/18/Qasr_Al_Hokm_Station_2025.jpg",
     link:"https://www.riyadhmetro.gov.sa"
   },
   {id:24,sector:"transport",name:"Saudi Land Bridge Railway",
     lat:24.8000,lng:46.9000,value:"$7B",gdp:"$15B",jobs:"22,000",status:"Planning — Phase 2",completion:"2030",phase:"Phase 2 Expansion",contractor:"Saudi Railway Company (SAR)",
+    nameAr:"الجسر البري السعودي — السكك الحديدية",
     description:"Cross-country freight and passenger railway connecting Riyadh to Jeddah, Dammam, and Haradh. Phase 2 expanding freight capacity and adding passenger service.",
-    image:"",
+    descAr:"خط سكة حديد للشحن والركاب يربط الرياض بجدة والدمام والحرض. المرحلة الثانية لتوسيع الطاقة الاستيعابية.",
+    image:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Saudi_Railways_Organization_train.jpg/800px-Saudi_Railways_Organization_train.jpg",
     link:"https://www.sar.com.sa"
   },
 
   // ── ADDITIONAL REAL ESTATE ──
   {id:25,sector:"realestate",name:"KAFD — King Abdullah Financial District",
     lat:24.7700,lng:46.6400,value:"$10B",gdp:"$22B",jobs:"67,000",status:"Operational + Expanding",completion:"Ongoing",phase:"Operational",contractor:"Multiple — KAFD Authority",
+    nameAr:"كافد — مركز الملك عبدالله المالي",
     description:"Riyadh's financial hub — 73 towers, 1.6M sqm commercial space. HQ of PIF, Vision 2030 delivery bodies, major banks, and international firms.",
+    descAr:"المركز المالي في الرياض — 73 برجاً و1.6 مليون متر مربع. مقر صندوق الاستثمارات العامة والبنوك الكبرى والشركات الدولية.",
     image:"https://upload.wikimedia.org/wikipedia/commons/9/98/Riyadh_Skyline_showing_the_King_Abdullah_Financial_District_%28KAFD%29_and_the_famous_Kingdom_Tower_.jpg",
     link:"https://kafd.sa"
   },
   {id:26,sector:"realestate",name:"SPARK — King Salman Energy Park",
     lat:26.8667,lng:49.6833,value:"$4.3B",gdp:"$12B",jobs:"100,000",status:"Phase 1 Operational",completion:"2035",phase:"Phase 2 Active",contractor:"Aramco + MODON",
+    nameAr:"سبارك — مدينة الملك سلمان للطاقة",
     description:"World-scale industrial city for energy sector supply chain. 50km² site near Dammam. Manufactures energy equipment, oilfield services, and clean energy tech.",
-    image:"",
+    descAr:"مدينة صناعية عالمية لسلسلة إمداد قطاع الطاقة. موقع بمساحة 50 كم² قرب الدمام لتصنيع معدات الطاقة والتقنيات النظيفة.",
+    image:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/King_Salman_Energy_Park_%28SPARK%29.jpg/800px-King_Salman_Energy_Park_%28SPARK%29.jpg",
     link:"https://www.spark.com.sa"
   },
   {id:27,sector:"realestate",name:"Jeddah Waterfront — Corniche Development",
     lat:21.5400,lng:39.1400,value:"$6B",gdp:"$8.5B",jobs:"35,000",status:"Under Construction",completion:"2028",phase:"Phase 2 Active",contractor:"Jeddah Municipality + PIF",
+    nameAr:"واجهة جدة البحرية — تطوير الكورنيش",
     description:"30km Corniche regeneration with luxury hotels, branded residences, retail, F&B, and marine sports infrastructure. Integrated with Jeddah Tower precinct.",
+    descAr:"تجديد كورنيش جدة بطول 30 كم مع فنادق فاخرة ومساكن ومتاجر ومطاعم وبنية تحتية للرياضات البحرية.",
     image:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
     link:"https://www.jeddah.gov.sa"
   },
@@ -737,7 +793,9 @@ const PROJECTS = [
     name:"NEOM Green Hydrogen Plant",
     lat:28.1000, lng:35.0000,
     value:"$8.4B", gdp:"$12B", jobs:"15,000", status:"Under Construction", completion:"2030", phase:"Phase 1", contractor:"ACWA Power + Air Products + NEOM Co.",
+    nameAr:"مصنع الهيدروجين الأخضر — نيوم",
     description:"World's largest green hydrogen and ammonia plant. 4GW electrolysis powered by 100% renewables. 650 tonnes of hydrogen/day for export to global markets.",
+    descAr:"أكبر مصنع للهيدروجين الأخضر والأمونيا في العالم. 4 جيجاوات تعمل بالطاقة المتجددة 100%. 650 طن هيدروجين يومياً للتصدير.",
     image:"https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80",
     link:"https://www.neom.com/en-us/sectors/energy"
   },
@@ -746,7 +804,9 @@ const PROJECTS = [
     name:"NEOM Solar & Wind Gigaproject",
     lat:28.2000, lng:35.5000,
     value:"$50B", gdp:"$30B", jobs:"25,000", status:"Phase 1 Active", completion:"2030", phase:"Phase 1 — 9GW renewables", contractor:"ACWA Power + Saudi Aramco",
+    nameAr:"مشروع نيوم للطاقة الشمسية والرياح",
     description:"50GW renewable energy target for NEOM by 2030. Combination of utility-scale solar PV, onshore wind, and offshore wind farms across the NEOM region.",
+    descAr:"هدف 50 جيجاوات من الطاقة المتجددة لنيوم بحلول 2030. مزيج من الطاقة الشمسية وطاقة الرياح البرية والبحرية.",
     image:"https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80",
     link:"https://www.neom.com/en-us/sectors/energy"
   },
@@ -755,7 +815,9 @@ const PROJECTS = [
     name:"Saudi Aramco — Upstream Expansion",
     lat:26.3167, lng:50.1167,
     value:"$40B", gdp:"$180B annual", jobs:"75,000", status:"Active Investment Cycle", completion:"2028", phase:"2024–2028 Cap-Ex Cycle", contractor:"Saudi Aramco + international partners",
+    nameAr:"أرامكو السعودية — التوسع",
     description:"$40B capital investment program 2024–2028 to maintain 12M bbl/day production capacity, expand gas production, and grow domestic refining. Anchors KSA fiscal revenue.",
+    descAr:"برنامج استثمار رأسمالي بقيمة 40 مليار دولار 2024–2028 للحفاظ على طاقة إنتاجية 12 مليون برميل يومياً وتوسيع إنتاج الغاز.",
     image:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80",
     link:"https://www.aramco.com"
   },
@@ -766,7 +828,9 @@ const PROJECTS = [
     name:"Rua Al Madinah",
     lat:24.4670, lng:39.6109,
     value:"$20B+", gdp:"$37.25B by 2030", jobs:"93,000", status:"Under Construction", completion:"2030", phase:"Phase 1 — 60% infra complete", contractor:"Rua Al Madinah Holding (PIF)",
+    nameAr:"رؤى المدينة المنورة",
     description:"1.5M sqm development adjacent to the Prophet's Mosque adding 47,000 hotel rooms for 30M Umrah pilgrims annually. Fairmont residences on sale 2026.",
+    descAr:"تطوير 1.5 مليون متر مربع بجوار المسجد النبوي يضيف 47,000 غرفة فندقية لخدمة 30 مليون معتمر سنوياً.",
     image:"https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=800&q=80",
     link:"https://www.ruaalmadinah.com"
   },
@@ -775,7 +839,9 @@ const PROJECTS = [
     name:"King Salman Automotive Cluster — KAEC",
     lat:22.4487, lng:39.1336,
     value:"$5B+", gdp:"$24.5B by 2035", jobs:"30,000+", status:"Under Construction", completion:"2026", phase:"Factory Construction", contractor:"Ceer (PIF + Foxconn) + Lucid Motors + Hyundai",
+    nameAr:"تجمع الملك سلمان للسيارات — كاك",
     description:"Saudi Arabia's first automotive manufacturing hub at King Abdullah Economic City. Ceer EV plant (240K vehicles/yr) and Lucid factory, inaugurated by Crown Prince MBS Feb 2025.",
+    descAr:"أول مركز لتصنيع السيارات في السعودية في مدينة الملك عبدالله الاقتصادية. مصنع سير للسيارات الكهربائية ومصنع لوسيد.",
     image:"https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
     link:"https://ceermotors.com"
   },
@@ -784,7 +850,9 @@ const PROJECTS = [
     name:"The Rig — Offshore Adventure Platform",
     lat:26.80, lng:50.05,
     value:"$5B", gdp:"$3.5B+", jobs:"10,000+", status:"Under Construction", completion:"2027", phase:"Construction RFPs Awarded", contractor:"Oil Park Development Company (PIF)",
+    nameAr:"ذا ريج — منصة المغامرات البحرية",
     description:"World's first offshore tourism destination on decommissioned oil platforms with 800 hotel rooms, 70 attractions, and 11 restaurants across four interconnected rigs.",
+    descAr:"أول وجهة سياحية بحرية في العالم على منصات نفطية مُعاد تأهيلها مع 800 غرفة فندقية و70 لعبة و11 مطعماً.",
     image:"https://images.unsplash.com/photo-1518623489648-a173ef7824f3?w=800&q=80",
     link:"https://therig.sa"
   },
@@ -793,7 +861,9 @@ const PROJECTS = [
     name:"Aramco Stadium — Al Khobar",
     lat:26.3300, lng:50.2100,
     value:"$1B", gdp:"$2B+", jobs:"15,000+", status:"Under Construction", completion:"2027", phase:"Active Construction", contractor:"BESIX + Al Bawani",
+    nameAr:"استاد أرامكو — الخبر",
     description:"46,000-seat FIFA 2034 World Cup and AFC Asian Cup 2027 venue on Al Khobar's Corniche, owned by ROSHN and operated by Saudi Aramco.",
+    descAr:"ملعب بسعة 46,000 مقعد لكأس العالم 2034 وكأس آسيا 2027 على كورنيش الخبر.",
     image:"https://images.unsplash.com/photo-1577223625816-7546f13df25d?w=800&q=80",
     link:"https://www.aramcostadium.com"
   },
@@ -802,7 +872,9 @@ const PROJECTS = [
     name:"Jeddah Historic District (Al-Balad)",
     lat:21.4225, lng:39.8262,
     value:"$2.5B", gdp:"$4B", jobs:"15,000", status:"Planning", completion:"2029", phase:"Master Planning", contractor:"Ministry of Culture + PIF",
+    nameAr:"جدة التاريخية (البلد)",
     description:"UNESCO-backed Al-Balad heritage zone restoration with museums, galleries, boutique hotels, and creative industries hub in historic Jeddah.",
+    descAr:"ترميم منطقة البلد التراثية المدعومة من اليونسكو مع متاحف ومعارض وفنادق بوتيك ومركز صناعات إبداعية.",
     image:"https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80",
     link:"https://www.moc.gov.sa"
   },
@@ -811,7 +883,9 @@ const PROJECTS = [
     name:"Jeddah Rapid Transit — BRT & Metro",
     lat:21.5433, lng:39.1728,
     value:"$5.5B", gdp:"$9B", jobs:"42,000", status:"Under Construction", completion:"2029", phase:"Phase 1 — BRT Lines", contractor:"Jeddah Transit Authority",
+    nameAr:"النقل السريع في جدة — حافلات ومترو",
     description:"Three-phase rapid transit system for Jeddah. BRT network plus metro lines connecting airport, downtown, waterfront, and Makkah corridor. 1.2M daily riders projected.",
+    descAr:"نظام نقل سريع من ثلاث مراحل لجدة. شبكة حافلات سريعة وخطوط مترو تربط المطار ووسط المدينة والواجهة البحرية.",
     image:"https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&q=80",
     link:"https://www.jeddah.gov.sa"
   },
@@ -820,7 +894,9 @@ const PROJECTS = [
     name:"NEOM Oxagon DataVolt AI Factory",
     lat:27.9833, lng:35.2000,
     value:"$5B", gdp:"$8B+", jobs:"5,000+", status:"Planning", completion:"2028", phase:"Agreement Signed Feb 2025", contractor:"DataVolt + NEOM Company",
+    nameAr:"مصنع داتا فولت للذكاء الاصطناعي — أوكساغون نيوم",
     description:"1.5GW net-zero hyperscale AI data center campus in NEOM's Oxagon industrial zone, powered entirely by renewable energy. Marks NEOM's pivot toward digital infrastructure.",
+    descAr:"حرم مراكز بيانات ضخمة صفرية الانبعاثات بقدرة 1.5 جيجاوات في منطقة أوكساغون الصناعية بنيوم، تعمل بالطاقة المتجددة بالكامل.",
     image:"https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
     link:"https://www.neom.com/en-us/regions/oxagon"
   },
@@ -829,7 +905,9 @@ const PROJECTS = [
     name:"Prince Abdullah Al Faisal Stadium — Jeddah",
     lat:21.5169, lng:39.1925,
     value:"$1.2B", gdp:"$2.5B", jobs:"18,000", status:"Under Construction", completion:"2027", phase:"Active Construction", contractor:"Populous + Saudi Binladin Group",
+    nameAr:"استاد الأمير عبدالله الفيصل — جدة",
     description:"35,000-seat FIFA 2034 World Cup venue in Jeddah. Next-gen stadium with fully retractable roof, integrated fan zones, and zero-carbon cooling system powered by solar.",
+    descAr:"ملعب بسعة 35,000 مقعد لكأس العالم 2034 في جدة. ملعب من الجيل القادم بسقف قابل للطي ونظام تبريد بالطاقة الشمسية.",
     image:"https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80",
     link:"https://www.saff.com.sa"
   }
@@ -875,6 +953,26 @@ const TICKER=[
   "Riyadh Intelligence Platform · riyadh.ahmedmezil.com",
 ];
 
+const TICKER_AR=[
+  "استاد الأمير محمد بن سلمان · القدية · <strong>8 مليار$</strong> · كأس العالم 2034",
+  "نيوم ذا لاين · مدينة خطية 170 كم · <strong>500 مليار$</strong> · المرحلة الأولى 2030",
+  "برج جدة · أطول مبنى في العالم · <strong>1,000 متر</strong> · الإنجاز 2028",
+  "مطار الملك سلمان · 185 مليون مسافر/سنة · <strong>147 مليار$</strong>",
+  "هيدروجين نيوم الأخضر · <strong>8.4 مليار$</strong> · 650 طن/يوم بحلول 2030",
+  "بوليفارد الرياضة · ممر رياضي 135 كم · <strong>3.8 مليار$</strong>",
+  "المربع الجديد · 104,000 وحدة سكنية · <strong>50 مليار$</strong> · 334,000 وظيفة",
+  "إكسبو 2030 الرياض · 50 مليون زائر · 180 دولة · <strong>38 مليار$</strong> أثر اقتصادي",
+  "نيوم للطاقة المتجددة · <strong>50 مليار$</strong> التزام بالطاقة النظيفة",
+  "توسع أرامكو · <strong>40 مليار$</strong> استثمار 2024–2028",
+  "رؤى المدينة · <strong>15 مليار$</strong> · مخطط المدينة المنورة · 30 مليون حاج/سنة",
+  "تجمع الملك سلمان للسيارات · مصانع سير + لوسيد · <strong>+5 مليار$</strong>",
+  "استاد أرامكو · الخبر · كأس العالم 2034 · <strong>1 مليار$</strong>",
+  "ذا ريج · أول منصة سياحية بحرية · <strong>5 مليار$</strong>",
+  "النقل السريع في جدة · حافلات ومترو · <strong>5.5 مليار$</strong>",
+  "داتا فولت نيوم · مركز بيانات ذكاء اصطناعي · <strong>5 مليار$</strong>",
+  "منصة الرياض الاستخباراتية · riyadh.ahmedmezil.com",
+];
+
 // ── CLOCK ──
 function updateClock(){
   const r=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Riyadh'}));
@@ -889,7 +987,33 @@ setInterval(updateClock,1000); updateClock();
 document.getElementById('s-days').textContent=Math.ceil((new Date('2030-01-01')-new Date())/86400000).toLocaleString();
 
 // ── TICKER ──
-document.getElementById('ttrack').innerHTML=[...TICKER,...TICKER].map(t=>`<div class="titem">${t}<span style="color:var(--dim);padding:0 4px">·</span></div>`).join('');
+function buildTicker(){
+  const t=currentLang==='ar'?TICKER_AR:TICKER;
+  document.getElementById('ttrack').innerHTML=[...t,...t].map(i=>`<div class="titem">${i}<span style="color:var(--dim);padding:0 4px">·</span></div>`).join('');
+}
+buildTicker();
+
+// Make ticker touch-scrollable
+(function(){
+  const ticker=document.getElementById('ticker');
+  const track=document.getElementById('ttrack');
+  let dragging=false,startX=0,scrollLeft=0;
+  ticker.addEventListener('touchstart',e=>{
+    dragging=true;track.style.animationPlayState='paused';
+    startX=e.touches[0].pageX;
+    const t=getComputedStyle(track).transform;
+    const m=t.match(/matrix.*\((.+)\)/);
+    scrollLeft=m?parseFloat(m[1].split(',')[4]):0;
+  },{passive:true});
+  ticker.addEventListener('touchmove',e=>{
+    if(!dragging) return;
+    const dx=e.touches[0].pageX-startX;
+    track.style.transform=`translateX(${scrollLeft+dx}px)`;
+  },{passive:true});
+  ticker.addEventListener('touchend',()=>{
+    dragging=false;track.style.animationPlayState='running';track.style.transform='';
+  });
+})();
 
 // ── FEED ──
 let fi=0;
@@ -996,6 +1120,28 @@ map.on('load',()=>{
   map.setPaintProperty('land','background-color','#14120e');
   try{ map.setPaintProperty('landcover','fill-color','#1a1710'); }catch(e){}
   try{ map.setPaintProperty('national-park','fill-color','#16200e'); }catch(e){}
+
+  // Enhance road visibility and highway labels for investor context
+  const style=map.getStyle();
+  style.layers.forEach(layer=>{
+    // Brighten road lines
+    if(layer.id.includes('road')&&layer.type==='line'){
+      try{ map.setPaintProperty(layer.id,'line-opacity',0.5); }catch(e){}
+    }
+    // Make highway shields and road labels more visible
+    if(layer.id.includes('road')&&layer.type==='symbol'){
+      try{
+        map.setPaintProperty(layer.id,'text-color','rgba(200,200,200,0.7)');
+        map.setPaintProperty(layer.id,'text-halo-color','rgba(10,10,10,0.9)');
+        map.setPaintProperty(layer.id,'text-halo-width',1.5);
+        map.setLayoutProperty(layer.id,'text-size',['interpolate',['linear'],['zoom'],5,9,10,11,14,13]);
+      }catch(e){}
+    }
+    // Show motorway shields
+    if(layer.id.includes('shield')||layer.id.includes('motorway')){
+      try{ map.setLayoutProperty(layer.id,'visibility','visible'); }catch(e){}
+    }
+  });
 
   map.addSource('projects',{type:'geojson',data:buildGeoJSON('all'),promoteId:'id'});
 
