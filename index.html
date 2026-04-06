@@ -29,7 +29,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 }
 .back-link{font-size:10px;font-weight:400;color:var(--dim);text-decoration:none;pointer-events:all;display:inline-flex;align-items:center;gap:4px;transition:color 0.15s;margin-bottom:4px;letter-spacing:0.02em}
 .back-link:hover{color:var(--green)}
-.brand{font-weight:800;font-size:18px;line-height:1;color:#fff;letter-spacing:-0.02em}
+.brand{font-weight:800;font-size:20px;line-height:1;color:#fff;letter-spacing:-0.02em}
 .brand em{color:var(--green);font-style:normal}
 
 /* ── STATS BAR ── */
@@ -39,23 +39,23 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 }
 .sblock{display:flex;flex-direction:column;gap:1px;padding-right:20px;margin-right:20px;border-right:1px solid var(--border)}
 .sblock:last-child{border-right:none}
-.sval{font-weight:700;font-size:14px;color:#fff}
+.sval{font-weight:700;font-size:16px;color:#fff}
 .sval.green{color:var(--green)}
-.slabel{font-size:8px;font-weight:400;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase}
+.slabel{font-size:9px;font-weight:400;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase}
 
 /* ── FILTERS ── */
 #filters{position:absolute;top:108px;left:22px;z-index:20;display:flex;flex-direction:column;gap:3px}
-.filter-label{font-size:8px;font-weight:600;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px}
+.filter-label{font-size:9px;font-weight:600;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px}
 .filter-btn{
   display:flex;align-items:center;gap:8px;padding:6px 11px;
   background:rgba(10,10,10,0.84);border:1px solid var(--border);border-radius:4px;
-  cursor:pointer;font-family:'Poppins',sans-serif;font-size:10px;font-weight:500;
+  cursor:pointer;font-family:'Poppins',sans-serif;font-size:12px;font-weight:500;
   color:var(--muted);transition:border-color 0.15s,color 0.15s;
   backdrop-filter:blur(12px);white-space:nowrap;
 }
 .filter-btn:hover{color:#fff;border-color:var(--border2)}
 .fdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.fcount{margin-left:auto;padding-left:12px;font-size:9px;opacity:0.35}
+.fcount{margin-left:auto;padding-left:12px;font-size:10px;opacity:0.35}
 
 /* ── POPUP ── */
 .mapboxgl-popup{max-width:330px!important}
@@ -81,23 +81,23 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
   position:absolute;bottom:0;left:0;right:0;height:50%;
   background:linear-gradient(to top,rgba(10,10,10,1),transparent);
 }
-.ptag{padding:7px 14px;font-size:7px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase}
+.ptag{padding:7px 14px;font-size:8px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase}
 .pbody{padding:2px 14px 14px}
-.pname{font-weight:700;font-size:13px;line-height:1.3;color:#fff;margin-bottom:8px}
+.pname{font-weight:700;font-size:15px;line-height:1.3;color:#fff;margin-bottom:8px}
 .phr{height:1px;background:var(--border);margin-bottom:9px}
 
 /* insight block */
-.p-insight{padding:8px 11px;border-left:2px solid;font-size:9px;font-weight:400;line-height:1.55;margin-bottom:8px}
+.p-insight{padding:8px 11px;border-left:2px solid;font-size:10px;font-weight:400;line-height:1.55;margin-bottom:8px}
 
 .pmeta{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px;margin-bottom:10px}
 .pm{display:flex;flex-direction:column;gap:1px}
-.pmk{font-size:7px;font-weight:400;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
-.pmv{font-size:10px;font-weight:600;color:#fff}
+.pmk{font-size:8px;font-weight:400;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
+.pmv{font-size:11px;font-weight:600;color:#fff}
 
 .pdesc{font-size:9px;font-weight:300;line-height:1.55;color:var(--muted);margin-bottom:10px}
 
 .p-actions{display:flex;gap:6px}
-.p-link{flex:1;display:block;padding:7px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:4px;font-size:9px;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.15s,border-color 0.15s;text-align:center;letter-spacing:0.02em}
+.p-link{flex:1;display:block;padding:7px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:4px;font-size:10px;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.15s,border-color 0.15s;text-align:center;letter-spacing:0.02em}
 .p-link:hover{color:#fff;border-color:var(--border2)}
 .p-link.primary{background:var(--green-dim);border-color:var(--green);color:var(--green)}
 .p-link.primary:hover{background:rgba(0,232,122,0.18)}
@@ -118,13 +118,13 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 #metrics.collapsed .mpanel-toggle{transform:rotate(-90deg)}
 .live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1.8s ease-in-out infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.1}}
-.mpanel-title{font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+.mpanel-title{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
 .mpanel-time{margin-left:auto;font-size:8px;font-weight:300;color:var(--dim)}
 .mitem{padding:7px 12px;border-bottom:1px solid var(--border);animation:fin 0.3s ease}
 .mitem:last-child{border-bottom:none}
 @keyframes fin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-.mlabel{font-size:7px;font-weight:500;color:var(--muted);margin-bottom:2px;letter-spacing:0.04em}
-.mval{font-size:11px;font-weight:600;color:#fff;line-height:1.2}
+.mlabel{font-size:8px;font-weight:500;color:var(--muted);margin-bottom:2px;letter-spacing:0.04em}
+.mval{font-size:12px;font-weight:600;color:#fff;line-height:1.2}
 .mval span{color:var(--green)}
 
 /* ── COMPARE BAR ── */
@@ -181,21 +181,21 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 
 /* ── AUTHOR ── */
 #author{position:absolute;bottom:50px;right:22px;z-index:20;text-align:right;pointer-events:none}
-.author-name{font-size:9px;font-weight:500;color:var(--dim);letter-spacing:0.04em}
+.author-name{font-size:10px;font-weight:500;color:var(--dim);letter-spacing:0.04em}
 .author-name a{color:var(--green);text-decoration:none;pointer-events:all;transition:color 0.15s}
 .author-name a:hover{color:#fff}
 
 /* ── CLOCK ── */
 #clock{position:absolute;top:14px;right:22px;z-index:21;text-align:right;pointer-events:none}
-.clock-time{font-weight:600;font-size:13px;color:var(--green);letter-spacing:0.04em}
-.clock-date{font-size:8px;font-weight:300;color:var(--dim);margin-top:1px}
+.clock-time{font-weight:600;font-size:14px;color:var(--green);letter-spacing:0.04em}
+.clock-date{font-size:9px;font-weight:300;color:var(--dim);margin-top:1px}
 
 /* ── TICKER ── */
 #ticker{position:absolute;bottom:0;left:0;right:0;z-index:20;height:36px;background:rgba(10,10,10,0.97);border-top:1px solid var(--border);display:flex;align-items:center;overflow:hidden}
-.ttag{flex-shrink:0;padding:0 14px;font-size:7px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#000;background:var(--green);height:100%;display:flex;align-items:center}
+.ttag{flex-shrink:0;padding:0 14px;font-size:8px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#000;background:var(--green);height:100%;display:flex;align-items:center}
 .ttrack{display:flex;animation:ticker 55s linear infinite;white-space:nowrap}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.titem{font-size:9px;font-weight:400;padding:0 26px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.titem{font-size:10px;font-weight:400;padding:0 26px;color:var(--muted);display:flex;align-items:center;gap:6px}
 .titem strong{color:#fff;font-weight:600}
 
 .mapboxgl-ctrl-attrib,.mapboxgl-ctrl-logo{display:none!important}
@@ -227,27 +227,27 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 #mobile-sheet .sheet-close{position:absolute;top:8px;right:12px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;z-index:2;padding:4px 8px}
 #mobile-sheet .sheet-close:hover{color:#fff}
 #mobile-sheet .p-img-wrap{height:120px}
-#mobile-sheet .pname{font-size:13px}
-#mobile-sheet .p-insight{font-size:9px;padding:7px 10px}
+#mobile-sheet .pname{font-size:15px}
+#mobile-sheet .p-insight{font-size:11px;padding:7px 10px}
 #mobile-sheet .pmeta{gap:3px 8px}
-#mobile-sheet .pmk{font-size:7px}
-#mobile-sheet .pmv{font-size:10px}
-#mobile-sheet .p-link{padding:8px;font-size:9px}
+#mobile-sheet .pmk{font-size:8px}
+#mobile-sheet .pmv{font-size:11px}
+#mobile-sheet .p-link{padding:8px;font-size:10px}
 
 /* ── MOBILE ── */
 @media(max-width:600px){
   #header{padding:10px 14px 0}
-  .brand{font-size:15px}
-  .back-link{font-size:8px}
+  .brand{font-size:17px}
+  .back-link{font-size:9px}
   #statsbar{top:58px;left:14px;right:14px;flex-wrap:wrap;gap:0}
   .sblock{padding-right:12px;margin-right:12px}
-  .sval{font-size:12px}
-  .slabel{font-size:7px}
+  .sval{font-size:14px}
+  .slabel{font-size:8px}
   #filters{top:94px;left:14px;gap:2px}
-  .filter-btn{padding:5px 9px;font-size:9px}
-  .fcount{font-size:8px;padding-left:8px}
+  .filter-btn{padding:5px 9px;font-size:11px}
+  .fcount{font-size:9px;padding-left:8px}
   #clock{top:10px;right:14px}
-  .clock-time{font-size:11px}
+  .clock-time{font-size:12px}
 
   /* Hide default Mapbox popup on mobile — use bottom sheet instead */
   .mapboxgl-popup{display:none!important}
@@ -788,6 +788,12 @@ function buildGeoJSON(sector){
 
 map.on('load',()=>{
   map.setFog({color:'rgb(10,10,10)','high-color':'rgb(12,14,20)','horizon-blend':0.015,'space-color':'rgb(4,4,6)','star-intensity':0.55});
+
+  // Tint water blue and land sandy for geographic context
+  map.setPaintProperty('water','fill-color','#0a2540');
+  map.setPaintProperty('land','background-color','#14120e');
+  try{ map.setPaintProperty('landcover','fill-color','#1a1710'); }catch(e){}
+  try{ map.setPaintProperty('national-park','fill-color','#16200e'); }catch(e){}
 
   map.addSource('projects',{type:'geojson',data:buildGeoJSON('all'),promoteId:'id'});
 
