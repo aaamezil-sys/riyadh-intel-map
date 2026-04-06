@@ -1,0 +1,24 @@
+name: Deploy to live site
+
+on:
+  push:
+    branches: [main]
+    paths: [index.html]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Push index.html to riyadh-map repo
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.DEPLOY_TOKEN }}
+        with:
+          source_file: 'index.html'
+          destination_repo: 'aaamezil-sys/riyadh-map'
+          destination_folder: 'riyadh-intel-map'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          user_name: 'github-actions[bot]'
+          commit_message: 'Deploy updated index.html from riyadh-intel-map'
