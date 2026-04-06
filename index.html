@@ -204,7 +204,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 /* ── TICKER ── */
 #ticker{position:absolute;bottom:0;left:0;right:0;z-index:20;height:36px;background:rgba(10,10,10,0.97);border-top:1px solid var(--border);display:flex;align-items:center;overflow:hidden}
 .ttag{flex-shrink:0;padding:0 14px;font-size:8px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:#000;background:var(--green);height:100%;display:flex;align-items:center}
-.ttrack{display:flex;animation:ticker 28s linear infinite;white-space:nowrap;cursor:grab}
+.ttrack{display:flex;animation:ticker 18s linear infinite;white-space:nowrap;cursor:grab}
 #ticker:hover .ttrack{animation-play-state:paused}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .titem{font-size:10px;font-weight:400;padding:0 26px;color:var(--muted);display:flex;align-items:center;gap:6px}
@@ -565,7 +565,7 @@ const PROJECTS = [
     nameAr:"استاد الأمير محمد بن سلمان (القدية)",
     description:"46,979-seat FIFA 2034 World Cup venue built on the edge of Tuwaiq cliffs. World's first stadium with retractable roof, movable pitch, and full LED wall.",
     descAr:"ملعب بسعة 46,979 مقعد لكأس العالم 2034 على حافة جرف طويق. أول ملعب في العالم بسقف قابل للسحب وأرضية متحركة وشاشة LED كاملة.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/3/3e/Qiddiya_City_overview.jpg",
+    image:"https://images.unsplash.com/photo-1577223625816-7546f13df25d?w=800&q=80",
     link:"https://qiddiya.com"
   },
   {id:2,sector:"sports",name:"King Fahd International Stadium Upgrade",
@@ -581,7 +581,7 @@ const PROJECTS = [
     nameAr:"بوليفارد الرياضة — الرياض",
     description:"135km linear sports and wellness corridor cutting through Riyadh. Cycling, athletics, padel, aquatics, outdoor fitness, and commercial retail zones.",
     descAr:"ممر رياضي خطي بطول 135 كم عبر الرياض. دراجات، ألعاب قوى، بادل، رياضات مائية، لياقة بدنية، ومناطق تجارية.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/a/a3/King_Abdullah_Road%2C_Riyadh.jpg",
+    image:"https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&q=80",
     link:"https://sportsblvd.com.sa"
   },
   {id:4,sector:"sports",name:"Prince Faisal bin Fahd Olympic Complex",
@@ -589,7 +589,7 @@ const PROJECTS = [
     nameAr:"مجمع الأمير فيصل بن فهد الأولمبي",
     description:"National Olympic training complex — aquatics, athletics, gymnastics, multi-sport halls. Elite athlete preparation hub for KSA national teams.",
     descAr:"مجمع تدريب أولمبي وطني — سباحة، ألعاب قوى، جمباز، وصالات رياضية متعددة. مركز إعداد النخبة الرياضية السعودية.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/4/47/Prince_Faisal_bin_Fahd_Stadium_Riyadh.jpg",
+    image:"https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80",
     link:"https://www.mof.gov.sa"
   },
   {id:5,sector:"sports",name:"King Abdullah Sports City — Jeddah",
@@ -615,7 +615,7 @@ const PROJECTS = [
     nameAr:"المكعب — المربع الجديد",
     description:"400m × 400m × 400m cube structure — one of the world's most ambitious architectural feats. Immersive digital environment inside with 20 city blocks worth of internal space.",
     descAr:"هيكل مكعب بأبعاد 400×400×400 متر — أحد أكثر الإنجازات المعمارية طموحاً في العالم. بيئة رقمية غامرة بداخله تعادل 20 حياً سكنياً.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/0/04/Mukaab_Illustration.png",
+    image:"https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=800&q=80",
     link:"https://newmurabba.com"
   },
   {id:8,sector:"realestate",name:"Jeddah Tower (Kingdom Tower)",
@@ -647,7 +647,7 @@ const PROJECTS = [
     nameAr:"موقع إكسبو 2030 الرياض",
     description:"World Expo 2030 hosted in Riyadh. 50M projected visitors over 6 months. Theme: 'The Era of Change: Together for a Foresighted Tomorrow.' 180 participating nations.",
     descAr:"استضافة إكسبو العالمي 2030 في الرياض. 50 مليون زائر متوقع خلال 6 أشهر. شعار: عصر التغيير. 180 دولة مشاركة.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/2/21/Riyadh_Skyline_2024.jpg",
+    image:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
     link:"https://expo2030riyadh.com"
   },
   {id:12,sector:"realestate",name:"Oxagon — NEOM Industrial Port",
@@ -655,7 +655,7 @@ const PROJECTS = [
     nameAr:"أوكساغون — ميناء نيوم الصناعي",
     description:"World's largest floating industrial complex. Green hydrogen production, advanced manufacturing, and logistics port. Eight-sided structure on the Red Sea.",
     descAr:"أكبر مجمع صناعي عائم في العالم. إنتاج الهيدروجين الأخضر والتصنيع المتقدم والخدمات اللوجستية على البحر الأحمر.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/e/e8/NEOM_logo.svg",
+    image:"https://images.unsplash.com/photo-1611348586804-61bf6c080437?w=800&q=80",
     link:"https://www.neom.com/en-us/regions/oxagon"
   },
 
@@ -665,7 +665,7 @@ const PROJECTS = [
     nameAr:"نيوم — ذا لاين",
     description:"170km linear cognitive city with no roads, 100% renewable energy, AI-managed systems, and mirrored exterior. Phase 1 (2.4km) delivering by 2030.",
     descAr:"مدينة خطية ذكية بطول 170 كم بدون طرق وطاقة متجددة 100% وأنظمة ذكاء اصطناعي. المرحلة الأولى 2.4 كم بحلول 2030.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/c/ca/Line_Progress_October_2022.png",
+    image:"https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
     link:"https://www.neom.com/en-us/regions/theline"
   },
   {id:14,sector:"hospitality",name:"Red Sea Project",
@@ -681,7 +681,7 @@ const PROJECTS = [
     nameAr:"أمالا — الخليج الثلاثي",
     description:"Ultra-luxury wellness and yachting destination. 3 villages, 25km of coastline, 3,000 hotel keys. 'The Riviera of the Middle East.' Performance wellness as core product.",
     descAr:"وجهة فاخرة للعافية واليخوت. 3 قرى و25 كم من الساحل و3,000 غرفة فندقية. ريفييرا الشرق الأوسط.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/b/b4/Red_sea_reef.jpg",
+    image:"https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800&q=80",
     link:"https://www.amaala.com"
   },
   {id:16,sector:"hospitality",name:"Sindalah Island — NEOM",
@@ -697,7 +697,7 @@ const PROJECTS = [
     nameAr:"بوابة الدرعية — الحي الثقافي",
     description:"UNESCO World Heritage site transformed into global destination. At-Turaif district, luxury hotels, cultural museums, restaurants, and residential. Targets 27M visitors/year.",
     descAr:"موقع تراث عالمي لليونسكو يتحول إلى وجهة عالمية. حي الطريف وفنادق فاخرة ومتاحف ومطاعم. يستهدف 27 مليون زائر سنوياً.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/4/49/At-Turaif_District_of_Diriyah%2C_Saudi_Arabia.jpg",
+    image:"https://images.unsplash.com/photo-1578895101408-1a36b834405b?w=800&q=80",
     link:"https://www.diriyah.sa"
   },
 
@@ -707,7 +707,7 @@ const PROJECTS = [
     nameAr:"حديقة الملك سلمان",
     description:"World's largest urban park — 13.4km² in central Riyadh. Museums, performing arts, sports, F&B, cultural venues, and green corridors. 10M visitors expected annually.",
     descAr:"أكبر حديقة حضرية في العالم — 13.4 كم² في وسط الرياض. متاحف وفنون أدائية ورياضة ومطاعم ومساحات خضراء. 10 ملايين زائر سنوياً.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/0/08/KSP_Landscape.jpg",
+    image:"https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=800&q=80",
     link:"https://kingsalmanpark.sa"
   },
   {id:19,sector:"culture",name:"Qiddiya Entertainment City",
@@ -723,7 +723,7 @@ const PROJECTS = [
     nameAr:"موسم الرياض — فعاليات سنوية كبرى",
     description:"Annual mega-event season: boxing (Fury, Joshua, Usyk), WWE, F1 Experiences, concerts, and international sports. Expanding venues and duration each year.",
     descAr:"موسم فعاليات ضخم سنوي: ملاكمة وWWE وتجارب فورمولا 1 وحفلات ورياضات دولية. توسع في الأماكن والمدة كل عام.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/0/04/Riyadh_Season_2019.jpg",
+    image:"https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=80",
     link:"https://www.riyadhseason.sa"
   },
   {id:21,sector:"culture",name:"Ithra — King Abdulaziz Center",
@@ -731,7 +731,7 @@ const PROJECTS = [
     nameAr:"إثراء — مركز الملك عبدالعزيز الثقافي العالمي",
     description:"Saudi Aramco's cultural and innovation campus in Dhahran. Museum, cinema, makerspace, library, and talent development programs. 1.5M visitors/year.",
     descAr:"حرم أرامكو الثقافي والابتكاري في الظهران. متحف وسينما ومختبر إبداع ومكتبة وبرامج تطوير المواهب. 1.5 مليون زائر سنوياً.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/9/9f/King_Abdulaziz_Center_for_World_Culture_10.jpg",
+    image:"https://images.unsplash.com/photo-1564769625392-651b89c75989?w=800&q=80",
     link:"https://www.ithra.com"
   },
 
@@ -741,7 +741,7 @@ const PROJECTS = [
     nameAr:"مطار الملك سلمان الدولي",
     description:"World's largest airport terminal replacing KKIA. 185M passengers/year capacity. 6 runways, dedicated cargo city, and integrated transit hub. 57km² total site.",
     descAr:"أكبر صالة مطار في العالم بديلة لمطار الملك خالد. سعة 185 مليون مسافر سنوياً و6 مدارج ومدينة شحن ومحطة نقل متكاملة.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/5/52/King_Khalid_International_Airport_%28KKIA%29.jpg",
+    image:"https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80",
     link:"https://www.gaca.gov.sa"
   },
   {id:23,sector:"transport",name:"Riyadh Metro — Full Network",
@@ -749,7 +749,7 @@ const PROJECTS = [
     nameAr:"مترو الرياض — الشبكة الكاملة",
     description:"176 stations, 6 lines, 176km — one of the world's longest metro networks. Connects major districts, giga-projects, and airports across Riyadh.",
     descAr:"176 محطة و6 خطوط و176 كم — من أطول شبكات المترو في العالم. يربط الأحياء الرئيسية والمشاريع العملاقة والمطارات.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/1/18/Qasr_Al_Hokm_Station_2025.jpg",
+    image:"https://images.unsplash.com/photo-1565686487498-3d9e3c5a4e5c?w=800&q=80",
     link:"https://www.riyadhmetro.gov.sa"
   },
   {id:24,sector:"transport",name:"Saudi Land Bridge Railway",
@@ -757,7 +757,7 @@ const PROJECTS = [
     nameAr:"الجسر البري السعودي — السكك الحديدية",
     description:"Cross-country freight and passenger railway connecting Riyadh to Jeddah, Dammam, and Haradh. Phase 2 expanding freight capacity and adding passenger service.",
     descAr:"خط سكة حديد للشحن والركاب يربط الرياض بجدة والدمام والحرض. المرحلة الثانية لتوسيع الطاقة الاستيعابية.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/8/88/Saudi_Railways_Organization_SAR_train.jpg",
+    image:"https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=800&q=80",
     link:"https://www.sar.com.sa"
   },
 
@@ -767,7 +767,7 @@ const PROJECTS = [
     nameAr:"كافد — مركز الملك عبدالله المالي",
     description:"Riyadh's financial hub — 73 towers, 1.6M sqm commercial space. HQ of PIF, Vision 2030 delivery bodies, major banks, and international firms.",
     descAr:"المركز المالي في الرياض — 73 برجاً و1.6 مليون متر مربع. مقر صندوق الاستثمارات العامة والبنوك الكبرى والشركات الدولية.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/9/98/Riyadh_Skyline_showing_the_King_Abdullah_Financial_District_%28KAFD%29_and_the_famous_Kingdom_Tower_.jpg",
+    image:"https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=800&q=80",
     link:"https://kafd.sa"
   },
   {id:26,sector:"realestate",name:"SPARK — King Salman Energy Park",
@@ -775,7 +775,7 @@ const PROJECTS = [
     nameAr:"سبارك — مدينة الملك سلمان للطاقة",
     description:"World-scale industrial city for energy sector supply chain. 50km² site near Dammam. Manufactures energy equipment, oilfield services, and clean energy tech.",
     descAr:"مدينة صناعية عالمية لسلسلة إمداد قطاع الطاقة. موقع بمساحة 50 كم² قرب الدمام لتصنيع معدات الطاقة والتقنيات النظيفة.",
-    image:"https://upload.wikimedia.org/wikipedia/commons/1/1e/Dhahran_Saudi_Aramco.jpg",
+    image:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80",
     link:"https://www.spark.com.sa"
   },
   {id:27,sector:"realestate",name:"Jeddah Waterfront — Corniche Development",
