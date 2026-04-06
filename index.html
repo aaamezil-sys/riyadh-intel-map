@@ -161,14 +161,56 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 .p-news-meta{font-size:7px;color:var(--muted);margin-top:2px}
 .p-news-empty{font-size:8px;color:var(--dim);font-style:italic;padding:4px 0}
 
-/* ── MOBILE: start feed collapsed ── */
+/* ── MOBILE ── */
 @media(max-width:600px){
-  #metrics{width:190px}
-  #metrics.collapsed-mobile #m-items{display:none}
-  #metrics.collapsed-mobile .mpanel-toggle{transform:rotate(-90deg)}
-  #metrics.collapsed-mobile .mpanel-hdr{border-bottom:1px solid transparent}
+  /* Shrink header */
+  #header{padding:10px 14px 0}
+  .brand{font-size:15px}
+  .back-link{font-size:8px}
+
+  /* Stats bar */
+  #statsbar{top:58px;left:14px;right:14px;flex-wrap:wrap;gap:0}
+  .sblock{padding-right:12px;margin-right:12px}
+  .sval{font-size:12px}
+  .slabel{font-size:7px}
+
+  /* Filters — smaller, scrollable */
+  #filters{top:94px;left:14px;gap:2px}
+  .filter-btn{padding:5px 9px;font-size:9px}
+  .fcount{font-size:8px;padding-left:8px}
+
+  /* Clock */
+  #clock{top:10px;right:14px}
+  .clock-time{font-size:11px}
+
+  /* Popup — full width on mobile */
+  .mapboxgl-popup{max-width:calc(100vw - 24px)!important;left:12px!important;right:12px!important}
+  .mapboxgl-popup-content{max-height:65vh!important;overflow-y:auto!important}
+  .p-img-wrap{height:100px}
+  .pname{font-size:12px}
+  .pmeta{gap:3px 6px}
+  .pmk{font-size:6px}
+  .pmv{font-size:9px}
+  .p-actions{flex-wrap:wrap}
+  .p-link{padding:6px;font-size:8px}
+  .p-insight{font-size:8px;padding:6px 9px}
+  .p-news-link{font-size:8px}
+  .p-news-meta{font-size:6px}
+
+  /* Intel Feed — collapsed by default, above zoom */
+  #metrics{width:170px;bottom:110px;left:14px}
+  #metrics.collapsed #m-items{display:none}
+  #metrics.collapsed .mpanel-toggle{transform:rotate(-90deg)}
+  #metrics.collapsed .mpanel-hdr{border-bottom:1px solid transparent}
+
+  /* Author */
   #author{bottom:46px;right:12px}
   #author .author-name{font-size:8px}
+
+  /* Ticker */
+  #ticker{height:30px}
+  .ttag{font-size:6px;padding:0 10px}
+  .titem{font-size:8px;padding:0 18px}
 }
 </style>
 </head>
@@ -725,6 +767,7 @@ map.on('load',()=>{
     if(activePopup) activePopup.remove();
     activePopup=new mapboxgl.Popup({closeButton:true,maxWidth:'330px',offset:16})
       .setLngLat(coords).setHTML(popupHTML(p)).addTo(map);
+    if(window.innerWidth<=600) document.getElementById('metrics').classList.add('collapsed');
     activePopup.on('close',()=>{activePopup=null;activeProjectId=null;});
   });
 
