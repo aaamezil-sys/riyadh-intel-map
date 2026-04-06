@@ -1122,25 +1122,38 @@ map.on('load',()=>{
   try{ map.setPaintProperty('national-park','fill-color','#16200e'); }catch(e){}
 
   // Enhance road visibility and highway labels for investor context
-  const style=map.getStyle();
-  style.layers.forEach(layer=>{
-    // Brighten road lines
-    if(layer.id.includes('road')&&layer.type==='line'){
-      try{ map.setPaintProperty(layer.id,'line-opacity',0.5); }catch(e){}
+  const allLayers=map.getStyle().layers;
+  allLayers.forEach(layer=>{
+    const id=layer.id;
+    // Brighten road lines — target all road line layers
+    if(layer.type==='line'&&(id.match(/^road/)||id.match(/^bridge/)||id.match(/^tunnel/))){
+      try{ map.setPaintProperty(id,'line-opacity',0.6); }catch(e){}
     }
-    // Make highway shields and road labels more visible
-    if(layer.id.includes('road')&&layer.type==='symbol'){
+    // Make road labels visible and bright
+    if(layer.type==='symbol'&&id.match(/^road/)){
       try{
-        map.setPaintProperty(layer.id,'text-color','rgba(200,200,200,0.7)');
-        map.setPaintProperty(layer.id,'text-halo-color','rgba(10,10,10,0.9)');
-        map.setPaintProperty(layer.id,'text-halo-width',1.5);
-        map.setLayoutProperty(layer.id,'text-size',['interpolate',['linear'],['zoom'],5,9,10,11,14,13]);
+        map.setLayoutProperty(id,'visibility','visible');
+        map.setPaintProperty(id,'text-color','rgba(210,210,200,0.8)');
+        map.setPaintProperty(id,'text-halo-color','rgba(0,0,0,0.9)');
+        map.setPaintProperty(id,'text-halo-width',2);
       }catch(e){}
     }
-    // Show motorway shields
-    if(layer.id.includes('shield')||layer.id.includes('motorway')){
-      try{ map.setLayoutProperty(layer.id,'visibility','visible'); }catch(e){}
+    // Show shield layers (highway number badges)
+    if(id.match(/shield|number/)){
+      try{
+        map.setLayoutProperty(id,'visibility','visible');
+        map.setPaintProperty(id,'text-color','rgba(220,220,210,0.9)');
+      }catch(e){}
     }
+  });
+  // Force-show key label layers that dark-v11 may hide by default
+  ['road-label','road-number-shield','road-exit-shield'].forEach(id=>{
+    try{
+      map.setLayoutProperty(id,'visibility','visible');
+      map.setPaintProperty(id,'text-color','rgba(210,210,200,0.85)');
+      map.setPaintProperty(id,'text-halo-color','rgba(0,0,0,0.9)');
+      map.setPaintProperty(id,'text-halo-width',2);
+    }catch(e){}
   });
 
   map.addSource('projects',{type:'geojson',data:buildGeoJSON('all'),promoteId:'id'});
