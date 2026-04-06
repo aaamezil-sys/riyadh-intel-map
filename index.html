@@ -6,6 +6,7 @@
 <title>Riyadh Intelligence Platform — Vision 2030 Intel Map | Ahmed Mezil</title>
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.3.0/mapbox-gl-rtl-text.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -185,6 +186,16 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 .author-name a{color:var(--green);text-decoration:none;pointer-events:all;transition:color 0.15s}
 .author-name a:hover{color:#fff}
 
+/* ── LANGUAGE TOGGLE ── */
+#lang-toggle{
+  position:absolute;top:14px;right:120px;z-index:22;
+  background:rgba(10,10,10,0.85);border:1px solid var(--border);border-radius:4px;
+  padding:5px 10px;cursor:pointer;font-family:'Poppins',sans-serif;
+  font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0.04em;
+  backdrop-filter:blur(12px);transition:color 0.15s,border-color 0.15s;
+}
+#lang-toggle:hover{color:#fff;border-color:var(--border2)}
+
 /* ── CLOCK ── */
 #clock{position:absolute;top:14px;right:22px;z-index:21;text-align:right;pointer-events:none}
 .clock-time{font-weight:600;font-size:14px;color:var(--green);letter-spacing:0.04em}
@@ -248,6 +259,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
   .fcount{font-size:9px;padding-left:8px}
   #clock{top:10px;right:14px}
   .clock-time{font-size:12px}
+  #lang-toggle{top:10px;right:80px;font-size:9px;padding:4px 8px}
 
   /* Hide default Mapbox popup on mobile — use bottom sheet instead */
   .mapboxgl-popup{display:none!important}
@@ -274,6 +286,27 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
   .cp-card-label{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
   .cp-card-val{font-size:11px;font-weight:600;color:#fff;text-align:right;max-width:60%}
 }
+
+/* ── RTL / Arabic mode ── */
+html[dir="rtl"] #header{text-align:right}
+html[dir="rtl"] .back-link{direction:ltr;unicode-bidi:embed}
+html[dir="rtl"] #statsbar{direction:rtl}
+html[dir="rtl"] .sblock{padding-right:0;margin-right:0;border-right:none;padding-left:20px;margin-left:20px;border-left:1px solid var(--border)}
+html[dir="rtl"] .sblock:last-child{border-left:none}
+html[dir="rtl"] #filters{left:auto;right:22px}
+html[dir="rtl"] .fcount{margin-left:0;margin-right:auto;padding-left:0;padding-right:12px}
+html[dir="rtl"] #metrics{left:auto;right:22px}
+html[dir="rtl"] #author{right:auto;left:22px;text-align:left}
+html[dir="rtl"] #lang-toggle{right:auto;left:120px}
+html[dir="rtl"] #clock{right:auto;left:22px;text-align:left}
+html[dir="rtl"] .p-insight{border-left:none;border-right:2px solid}
+@media(max-width:600px){
+  html[dir="rtl"] #filters{left:auto;right:14px}
+  html[dir="rtl"] #metrics{left:auto;right:14px}
+  html[dir="rtl"] #author{right:auto;left:12px}
+  html[dir="rtl"] #lang-toggle{right:auto;left:80px}
+  html[dir="rtl"] #clock{right:auto;left:14px}
+}
 </style>
 </head>
 <body>
@@ -284,6 +317,9 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
   <a class="back-link" href="https://riyadh.ahmedmezil.com" target="_blank">← Riyadh Intelligence Platform</a>
   <div class="brand">Riyadh Intelligence <em>Platform</em></div>
 </div>
+
+<!-- LANGUAGE TOGGLE -->
+<button id="lang-toggle" onclick="toggleLang()">عربي</button>
 
 <!-- CLOCK -->
 <div id="clock">
@@ -357,6 +393,109 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 </div>
 
 <script>
+// ── RTL TEXT PLUGIN (fixes Arabic rendering on map) ──
+mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.3.0/mapbox-gl-rtl-text.js',null,true);
+
+// ── LANGUAGE SYSTEM ──
+let currentLang='en';
+const UI_TEXT={
+  en:{
+    brand:'Riyadh Intelligence <em>Platform</em>',
+    backLink:'← Riyadh Intelligence Platform',
+    projects:'Projects', pipeline:'Total Pipeline', daysTo2030:'Days to 2030',
+    fifaWc:'FIFA World Cup', worldExpo:'World Expo',
+    sector:'Sector', allProjects:'All Projects',
+    sports:'Sports & Performance', realestate:'Real Estate & Mixed',
+    hospitality:'Hospitality & Tourism', culture:'Culture & Entertainment',
+    transport:'Transport & Infra', energy:'Energy & Industry',
+    intelFeed:'Intel Feed', builtBy:'Built by',
+    compare:'Compare', compareTitle:'Project Comparison', close:'Close',
+    toggleLabel:'عربي',
+    investment:'Investment', gdp:'GDP Contribution', jobs:'Jobs',
+    status:'Status', completion:'Completion', phase:'Phase',
+    contractor:'Contractor', officialSource:'Official Source', maps:'Maps',
+  },
+  ar:{
+    brand:'منصة الرياض <em>الاستخباراتية</em>',
+    backLink:'→ منصة الرياض الاستخباراتية',
+    projects:'مشاريع', pipeline:'إجمالي الاستثمار', daysTo2030:'أيام حتى 2030',
+    fifaWc:'كأس العالم', worldExpo:'إكسبو العالمي',
+    sector:'القطاع', allProjects:'جميع المشاريع',
+    sports:'الرياضة والأداء', realestate:'العقارات والمشاريع المختلطة',
+    hospitality:'الضيافة والسياحة', culture:'الثقافة والترفيه',
+    transport:'النقل والبنية التحتية', energy:'الطاقة والصناعة',
+    intelFeed:'آخر الأخبار', builtBy:'تصميم',
+    compare:'مقارنة', compareTitle:'مقارنة المشاريع', close:'إغلاق',
+    toggleLabel:'English',
+    investment:'الاستثمار', gdp:'المساهمة في الناتج المحلي', jobs:'الوظائف',
+    status:'الحالة', completion:'الإنجاز', phase:'المرحلة',
+    contractor:'المقاول', officialSource:'المصدر الرسمي', maps:'الخريطة',
+  }
+};
+
+function toggleLang(){
+  currentLang=currentLang==='en'?'ar':'en';
+  applyLang();
+}
+
+function applyLang(){
+  const t=UI_TEXT[currentLang];
+  const isAr=currentLang==='ar';
+  document.documentElement.dir=isAr?'rtl':'ltr';
+  document.documentElement.lang=currentLang;
+
+  // Toggle button
+  document.getElementById('lang-toggle').textContent=t.toggleLabel;
+
+  // Header
+  document.querySelector('.brand').innerHTML=t.brand;
+  document.querySelector('.back-link').textContent=t.backLink;
+
+  // Stats labels
+  const labels=document.querySelectorAll('.slabel');
+  if(labels.length>=5){
+    labels[0].textContent=t.projects;
+    labels[1].textContent=t.pipeline;
+    labels[2].textContent=t.daysTo2030;
+    labels[3].textContent=t.fifaWc;
+    labels[4].textContent=t.worldExpo;
+  }
+
+  // Filter buttons
+  document.querySelector('.filter-label').textContent=t.sector;
+  const sectorKeys=['all','sports','realestate','hospitality','culture','transport','energy'];
+  const sectorTexts=[t.allProjects,t.sports,t.realestate,t.hospitality,t.culture,t.transport,t.energy];
+  document.querySelectorAll('.filter-btn').forEach((btn,i)=>{
+    const dot=btn.querySelector('.fdot');
+    const count=btn.querySelector('.fcount');
+    btn.innerHTML='';
+    btn.appendChild(dot);
+    btn.appendChild(document.createTextNode(sectorTexts[i]));
+    btn.appendChild(count);
+  });
+
+  // Intel feed title
+  document.querySelector('.mpanel-title').textContent=t.intelFeed;
+
+  // Author
+  document.querySelector('.author-name').innerHTML=`${t.builtBy} <a href="https://ahmedmezil.com" target="_blank" rel="noopener">Ahmed Mezil</a>`;
+
+  // Compare
+  document.getElementById('compare-btn').textContent=t.compare;
+  document.querySelector('.cp-title').textContent=t.compareTitle;
+  document.querySelector('.cp-close').innerHTML=`&#10005; ${t.close}`;
+
+  // Map labels
+  if(window._mapLoaded){
+    const lang=isAr?'ar':'en';
+    map.getStyle().layers.forEach(layer=>{
+      if(layer.layout&&layer.layout['text-field']){
+        try{ map.setLayoutProperty(layer.id,'text-field',['coalesce',['get','name_'+lang],['get','name']]); }catch(e){}
+      }
+    });
+  }
+}
+
 // ── NEWS DATA (loaded async) ──
 let NEWS_DATA = {};
 let NEWS_UPDATED = '';
@@ -739,25 +878,26 @@ function popupHTML(p){
     imgSection=`<div class="p-img-wrap"><div class="p-img-fallback" style="background:${c}15;height:70px">${EMOJI[p.sector]||'📍'}</div></div>`;
   }
 
+  const t=UI_TEXT[currentLang];
   return `
     ${imgSection}
     <div class="ptag" style="background:${c}18;color:${c}">${SECTOR_LABELS[p.sector]||p.sector} · Vision 2030</div>
     <div class="pbody">
-      <div class="pname">${p.name}</div>
-      <div class="p-insight" style="background:${c}10;border-color:${c};color:${c}">${p.description}</div>
+      <div class="pname">${p.nameAr&&currentLang==='ar'?p.nameAr:p.name}</div>
+      <div class="p-insight" style="background:${c}10;border-color:${c};color:${c}">${p.descAr&&currentLang==='ar'?p.descAr:p.description}</div>
       <div class="phr"></div>
       <div class="pmeta">
-        <div class="pm"><div class="pmk">Investment</div><div class="pmv" style="color:${c}">${p.value}</div></div>
-        <div class="pm"><div class="pmk">GDP Contribution</div><div class="pmv">${p.gdp}</div></div>
-        <div class="pm"><div class="pmk">Jobs</div><div class="pmv">${p.jobs}</div></div>
-        <div class="pm"><div class="pmk">Status</div><div class="pmv">${p.status}</div></div>
-        <div class="pm"><div class="pmk">Completion</div><div class="pmv">${p.completion}</div></div>
-        <div class="pm"><div class="pmk">Phase</div><div class="pmv">${p.phase}</div></div>
+        <div class="pm"><div class="pmk">${t.investment}</div><div class="pmv" style="color:${c}">${p.value}</div></div>
+        <div class="pm"><div class="pmk">${t.gdp}</div><div class="pmv">${p.gdp}</div></div>
+        <div class="pm"><div class="pmk">${t.jobs}</div><div class="pmv">${p.jobs}</div></div>
+        <div class="pm"><div class="pmk">${t.status}</div><div class="pmv">${p.status}</div></div>
+        <div class="pm"><div class="pmk">${t.completion}</div><div class="pmv">${p.completion}</div></div>
+        <div class="pm"><div class="pmk">${t.phase}</div><div class="pmv">${p.phase}</div></div>
       </div>
       <div class="p-actions">
-        ${p.link?`<a class="p-link primary" href="${p.link}" target="_blank" rel="noopener">↗ Official Source</a>`:''}
-        <a class="p-link" href="https://www.google.com/maps?q=${p.lat},${p.lng}" target="_blank" rel="noopener">📍 Maps</a>
-        <a class="p-link" href="#" onclick="event.preventDefault();addToCompare(${p.id})">⚖ Compare</a>
+        ${p.link?`<a class="p-link primary" href="${p.link}" target="_blank" rel="noopener">↗ ${t.officialSource}</a>`:''}
+        <a class="p-link" href="https://www.google.com/maps?q=${p.lat},${p.lng}" target="_blank" rel="noopener">📍 ${t.maps}</a>
+        <a class="p-link" href="#" onclick="event.preventDefault();addToCompare(${p.id})">⚖ ${t.compare}</a>
       </div>
     </div>
     ${newsHTML(p.id)}`;
@@ -871,6 +1011,7 @@ map.on('load',()=>{
   });
 
   updateCounts(); setActive('all');
+  window._mapLoaded=true;
 });
 
 // ── MOBILE SHEET ──
