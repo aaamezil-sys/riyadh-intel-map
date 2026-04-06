@@ -150,6 +150,17 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 .mapboxgl-ctrl-group{background:rgba(10,10,10,0.88)!important;border:1px solid var(--border)!important;border-radius:4px!important}
 .mapboxgl-ctrl-group button{background:transparent!important}
 
+/* ── NEWS IN POPUP ── */
+.p-news{padding:0 14px 10px}
+.p-news-hdr{font-size:7px;font-weight:700;color:var(--green);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.p-news-hdr::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--green);animation:blink 1.8s ease-in-out infinite}
+.p-news-item{padding:6px 0;border-bottom:1px solid var(--border)}
+.p-news-item:last-child{border-bottom:none}
+.p-news-link{font-size:9px;font-weight:500;color:var(--text);text-decoration:none;line-height:1.4;display:block;transition:color 0.15s}
+.p-news-link:hover{color:var(--green)}
+.p-news-meta{font-size:7px;color:var(--muted);margin-top:2px}
+.p-news-empty{font-size:8px;color:var(--dim);font-style:italic;padding:4px 0}
+
 /* ── MOBILE: start feed collapsed ── */
 @media(max-width:600px){
   #metrics{width:190px}
@@ -220,6 +231,14 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 </div>
 
 <script>
+// ── NEWS DATA (loaded async) ──
+let NEWS_DATA = {};
+let NEWS_UPDATED = '';
+fetch('https://raw.githubusercontent.com/aaamezil-sys/riyadh-intel-map/main/data/news.json')
+  .then(r => r.json())
+  .then(data => { NEWS_DATA = data.projects || {}; NEWS_UPDATED = data.updated || ''; })
+  .catch(() => {});
+
 // ═══════════════════════════════════════════════════════════
 // PROJECT DATABASE
 // To add projects: copy a block and fill in the fields.
@@ -613,7 +632,20 @@ function popupHTML(p){
         ${p.link?`<a class="p-link primary" href="${p.link}" target="_blank" rel="noopener">↗ Official Source</a>`:''}
         <a class="p-link" href="https://www.google.com/maps?q=${p.lat},${p.lng}" target="_blank" rel="noopener">📍 Maps</a>
       </div>
-    </div>`;
+    </div>
+    ${newsHTML(p.id)}`;
+}
+
+function newsHTML(id){
+  const articles = NEWS_DATA[id];
+  if(!articles || !articles.length) return '';
+  return `<div class="p-news">
+    <div class="p-news-hdr">Latest Intel</div>
+    ${articles.map(a=>`<div class="p-news-item">
+      <a class="p-news-link" href="${a.link}" target="_blank" rel="noopener">${a.title}</a>
+      <div class="p-news-meta">${a.source}${a.date?' · '+a.date:''}</div>
+    </div>`).join('')}
+  </div>`;
 }
 
 // ── MAP ──

@@ -1,0 +1,27 @@
+name: Fetch daily news
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # 6 AM UTC daily (9 AM Riyadh)
+  workflow_dispatch: # manual trigger
+
+jobs:
+  fetch-news:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch news for all projects
+        run: node scripts/fetch-news.js
+
+      - name: Commit and push news data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/news.json
+          git diff --staged --quiet || git commit -m "Update daily news data — $(date -u +%Y-%m-%d)"
+          git push
