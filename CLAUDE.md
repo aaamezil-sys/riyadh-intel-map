@@ -2,14 +2,14 @@
 
 ## Deployment
 
-- **Live site**: https://aaamezil-sys.github.io/riyadh-intel-map
-- **Hosting**: GitHub Pages, deployed from `main` branch, root `/`
-- **To deploy**: push to `main` — GitHub Pages auto-deploys within ~1 minute
+- **Source repo**: `aaamezil-sys/riyadh-intel-map` (THIS REPO — all edits happen here)
+- **Deployment repo**: `aaamezil-sys/riyadh-map` (serves the live site, contains a copy of index.html at `riyadh-intel-map/index.html`)
+- **Live URL**: https://riyadh.ahmedmezil.com/riyadh-intel-map
 
 After making any changes to `index.html`, always:
-1. Commit to `main` (or merge feature branch into `main`)
-2. `git push origin main`
-3. The site updates automatically
+1. Commit and push to `main` in THIS repo (`riyadh-intel-map`)
+2. ALSO copy the updated `index.html` to the deployment repo (`riyadh-map`) at path `riyadh-intel-map/index.html`
+3. If you have access to the `riyadh-map` repo, push the update there too. If not, tell the user they need to manually copy index.html to the deployment repo, or add `riyadh-map` to the session's allowed repositories.
 
 ## Project Structure
 
