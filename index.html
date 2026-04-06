@@ -178,7 +178,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 
 <!-- STATS BAR -->
 <div id="statsbar">
-  <div class="sblock"><div class="sval" id="s-projects">37</div><div class="slabel">Projects</div></div>
+  <div class="sblock"><div class="sval" id="s-projects">38</div><div class="slabel">Projects</div></div>
   <div class="sblock"><div class="sval green">$2.14T</div><div class="slabel">Total Pipeline</div></div>
   <div class="sblock"><div class="sval" id="s-days">—</div><div class="slabel">Days to 2030</div></div>
   <div class="sblock"><div class="sval green">2034</div><div class="slabel">FIFA World Cup</div></div>
@@ -188,7 +188,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 <!-- FILTERS -->
 <div id="filters">
   <div class="filter-label">Sector</div>
-  <button class="filter-btn" data-sector="all"><span class="fdot" style="background:var(--green)"></span>All Projects<span class="fcount" id="c-all">37</span></button>
+  <button class="filter-btn" data-sector="all"><span class="fdot" style="background:var(--green)"></span>All Projects<span class="fcount" id="c-all">38</span></button>
   <button class="filter-btn" data-sector="sports"><span class="fdot" style="background:var(--sports)"></span>Sports & Performance<span class="fcount" id="c-sports"></span></button>
   <button class="filter-btn" data-sector="realestate"><span class="fdot" style="background:var(--realestate)"></span>Real Estate & Mixed<span class="fcount" id="c-realestate"></span></button>
   <button class="filter-btn" data-sector="hospitality"><span class="fdot" style="background:var(--hospitality)"></span>Hospitality & Tourism<span class="fcount" id="c-hospitality"></span></button>
@@ -494,6 +494,15 @@ const PROJECTS = [
     description:"1.5GW net-zero hyperscale AI data center campus in NEOM's Oxagon industrial zone, powered entirely by renewable energy. Marks NEOM's pivot toward digital infrastructure.",
     image:"https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
     link:"https://www.neom.com/en-us/regions/oxagon"
+  },
+  {
+    id:38, sector:"sports",
+    name:"Prince Abdullah Al Faisal Stadium — Jeddah",
+    lat:21.5169, lng:39.1925,
+    value:"$1.2B", gdp:"$2.5B", jobs:"18,000", status:"Under Construction", completion:"2027", phase:"Active Construction", contractor:"Populous + Saudi Binladin Group",
+    description:"35,000-seat FIFA 2034 World Cup venue in Jeddah. Next-gen stadium with fully retractable roof, integrated fan zones, and zero-carbon cooling system powered by solar.",
+    image:"https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80",
+    link:"https://www.saff.com.sa"
   }
 ];
 
@@ -503,7 +512,7 @@ const EMOJI={sports:'🏟️',realestate:'🏗️',hospitality:'🏨',culture:'�
 const SECTOR_LABELS={sports:'Sports & Performance',realestate:'Real Estate',hospitality:'Hospitality & Tourism',culture:'Culture & Entertainment',transport:'Transport & Infra',energy:'Energy & Industry'};
 
 const FEED=[
-  {label:"Total Vision 2030 Pipeline",val:"<span>$2.14T+</span> across 37 tracked projects"},
+  {label:"Total Vision 2030 Pipeline",val:"<span>$2.14T+</span> across 38 tracked projects"},
   {label:"Highest Value Project",val:"NEOM The Line — <span>$500B</span>"},
   {label:"Most Jobs Created",val:"King Salman Airport — <span>500,000</span>"},
   {label:"Nearest Deadline",val:"Sindalah Island — <span>2026</span>"},
