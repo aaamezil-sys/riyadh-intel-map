@@ -263,6 +263,16 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
   #ticker{height:30px}
   .ttag{font-size:6px;padding:0 10px}
   .titem{font-size:8px;padding:0 18px}
+
+  /* Compare panel — vertical cards on mobile */
+  .cp-grid{padding:0 14px 40px}
+  .cp-grid.mobile-cards{display:flex;flex-direction:column;gap:16px}
+  .cp-card{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  .cp-card-name{padding:12px 14px;font-weight:700;font-size:14px;border-bottom:1px solid var(--border)}
+  .cp-card-row{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.04)}
+  .cp-card-row:last-child{border-bottom:none}
+  .cp-card-label{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
+  .cp-card-val{font-size:11px;font-weight:600;color:#fff;text-align:right;max-width:60%}
 }
 </style>
 </head>
@@ -946,10 +956,9 @@ function openCompare(){
   if(compareList.length<2) return;
   const projects=compareList.map(id=>PROJECTS.find(x=>x.id===id));
   const grid=document.getElementById('cp-grid');
-  grid.style.gridTemplateColumns=`120px repeat(${projects.length},1fr)`;
+  const isMobile=window.innerWidth<=600;
 
-  const rows=[
-    {label:'Project',key:'name',isHeader:true},
+  const fields=[
     {label:'Sector',key:'sector',format:v=>SECTOR_LABELS[v]||v},
     {label:'Investment',key:'value'},
     {label:'GDP Contribution',key:'gdp'},
@@ -961,25 +970,52 @@ function openCompare(){
   ];
 
   let html='';
-  rows.forEach(row=>{
-    const cls=row.isHeader?'cp-row header':'cp-row';
-    html+=`<div class="${cls}" style="grid-template-columns:120px repeat(${projects.length},1fr)">`;
-    html+=`<div class="cp-cell label">${row.label}</div>`;
+
+  if(isMobile){
+    // Card layout — one card per project, stacked vertically
+    grid.className='cp-grid mobile-cards';
+    grid.style.gridTemplateColumns='';
     projects.forEach(p=>{
-      let val=p[row.key]||'—';
-      if(row.format) val=row.format(val);
-      if(row.isHeader){
-        const c=COLORS[p.sector]||'#fff';
-        html+=`<div class="cp-cell name" style="color:${c}">${val}</div>`;
-      } else if(row.tag){
-        const c=val.includes('Under')?'#FFB800':val.includes('Operational')?'#00E87A':'#6aa2f0';
-        html+=`<div class="cp-cell"><span class="cell-tag" style="background:${c}22;color:${c}">${val}</span></div>`;
-      } else {
-        html+=`<div class="cp-cell">${val}</div>`;
-      }
+      const c=COLORS[p.sector]||'#fff';
+      html+=`<div class="cp-card">`;
+      html+=`<div class="cp-card-name" style="color:${c}">${p.name}</div>`;
+      fields.forEach(f=>{
+        let val=p[f.key]||'—';
+        if(f.format) val=f.format(val);
+        if(f.tag){
+          const tc=val.includes('Under')?'#FFB800':val.includes('Operational')?'#00E87A':'#6aa2f0';
+          html+=`<div class="cp-card-row"><span class="cp-card-label">${f.label}</span><span class="cp-card-val"><span class="cell-tag" style="background:${tc}22;color:${tc}">${val}</span></span></div>`;
+        } else {
+          html+=`<div class="cp-card-row"><span class="cp-card-label">${f.label}</span><span class="cp-card-val">${val}</span></div>`;
+        }
+      });
+      html+=`</div>`;
     });
-    html+=`</div>`;
-  });
+  } else {
+    // Desktop: grid table
+    grid.className='cp-grid';
+    grid.style.gridTemplateColumns=`120px repeat(${projects.length},1fr)`;
+    const rows=[{label:'Project',key:'name',isHeader:true},...fields];
+    rows.forEach(row=>{
+      const cls=row.isHeader?'cp-row header':'cp-row';
+      html+=`<div class="${cls}" style="grid-template-columns:120px repeat(${projects.length},1fr)">`;
+      html+=`<div class="cp-cell label">${row.label}</div>`;
+      projects.forEach(p=>{
+        let val=p[row.key]||'—';
+        if(row.format) val=row.format(val);
+        if(row.isHeader){
+          const c=COLORS[p.sector]||'#fff';
+          html+=`<div class="cp-cell name" style="color:${c}">${val}</div>`;
+        } else if(row.tag){
+          const c=val.includes('Under')?'#FFB800':val.includes('Operational')?'#00E87A':'#6aa2f0';
+          html+=`<div class="cp-cell"><span class="cell-tag" style="background:${c}22;color:${c}">${val}</span></div>`;
+        } else {
+          html+=`<div class="cp-cell">${val}</div>`;
+        }
+      });
+      html+=`</div>`;
+    });
+  }
 
   grid.innerHTML=html;
   document.getElementById('compare-panel').classList.add('open');
