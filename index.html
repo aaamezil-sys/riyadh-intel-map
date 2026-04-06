@@ -226,24 +226,30 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 
 /* ── MOBILE BOTTOM SHEET ── */
 #mobile-sheet{
-  display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;
-  max-height:70vh;background:rgba(10,10,10,0.98);
-  border-top:1px solid var(--border);border-radius:14px 14px 0 0;
+  display:none;position:fixed;inset:0;z-index:100;
+  background:rgba(8,8,8,0.98);
   overflow-y:auto;-webkit-overflow-scrolling:touch;
   backdrop-filter:blur(24px);
-  transform:translateY(100%);transition:transform 0.3s ease;
+  transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);
 }
 #mobile-sheet.open{display:block;transform:translateY(0)}
-#mobile-sheet .sheet-handle{width:36px;height:4px;background:var(--dim);border-radius:2px;margin:10px auto 6px}
-#mobile-sheet .sheet-close{position:absolute;top:8px;right:12px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;z-index:2;padding:4px 8px}
+#mobile-sheet .sheet-handle{width:36px;height:4px;background:var(--dim);border-radius:2px;margin:10px auto 8px}
+#mobile-sheet .sheet-close{position:absolute;top:10px;right:14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:14px;cursor:pointer;z-index:2;padding:6px 12px;font-family:'Poppins',sans-serif}
 #mobile-sheet .sheet-close:hover{color:#fff}
-#mobile-sheet .p-img-wrap{height:120px}
-#mobile-sheet .pname{font-size:15px}
-#mobile-sheet .p-insight{font-size:11px;padding:7px 10px}
-#mobile-sheet .pmeta{gap:3px 8px}
-#mobile-sheet .pmk{font-size:8px}
-#mobile-sheet .pmv{font-size:11px}
-#mobile-sheet .p-link{padding:8px;font-size:10px}
+#mobile-sheet .p-img-wrap{height:200px;border-radius:0}
+#mobile-sheet .ptag{font-size:9px;padding:10px 18px}
+#mobile-sheet .pbody{padding:4px 18px 18px}
+#mobile-sheet .pname{font-size:18px;margin-bottom:10px}
+#mobile-sheet .p-insight{font-size:12px;padding:10px 14px;line-height:1.6;margin-bottom:12px}
+#mobile-sheet .pmeta{gap:6px 12px;margin-bottom:14px}
+#mobile-sheet .pmk{font-size:9px}
+#mobile-sheet .pmv{font-size:13px}
+#mobile-sheet .p-actions{flex-direction:column;gap:8px}
+#mobile-sheet .p-link{padding:12px;font-size:12px;border-radius:6px}
+#mobile-sheet .p-news{padding:0 18px 20px}
+#mobile-sheet .p-news-hdr{font-size:8px}
+#mobile-sheet .p-news-link{font-size:11px}
+#mobile-sheet .p-news-meta{font-size:8px}
 
 /* ── MOBILE ── */
 @media(max-width:600px){
@@ -300,6 +306,10 @@ html[dir="rtl"] #author{right:auto;left:22px;text-align:left}
 html[dir="rtl"] #lang-toggle{right:auto;left:120px}
 html[dir="rtl"] #clock{right:auto;left:22px;text-align:left}
 html[dir="rtl"] .p-insight{border-left:none;border-right:2px solid}
+html[dir="rtl"] .mpanel-toggle{margin-left:0;margin-right:4px}
+html[dir="rtl"] .mpanel-time{margin-left:0;margin-right:auto}
+html[dir="rtl"] #mobile-sheet .sheet-close{right:auto;left:14px}
+html[dir="rtl"] .author-name a{direction:ltr;unicode-bidi:isolate}
 @media(max-width:600px){
   html[dir="rtl"] #filters{left:auto;right:14px}
   html[dir="rtl"] #metrics{left:auto;right:14px}
@@ -414,24 +424,41 @@ const UI_TEXT={
     investment:'Investment', gdp:'GDP Contribution', jobs:'Jobs',
     status:'Status', completion:'Completion', phase:'Phase',
     contractor:'Contractor', officialSource:'Official Source', maps:'Maps',
+    vision2030:'Vision 2030', latestIntel:'Latest Intel',
+    closeSheet:'✕',
   },
   ar:{
     brand:'منصة الرياض <em>الاستخباراتية</em>',
-    backLink:'→ منصة الرياض الاستخباراتية',
-    projects:'مشاريع', pipeline:'إجمالي الاستثمار', daysTo2030:'أيام حتى 2030',
-    fifaWc:'كأس العالم', worldExpo:'إكسبو العالمي',
+    backLink:'منصة الرياض الاستخباراتية →',
+    projects:'مشاريع', pipeline:'إجمالي الاستثمار', daysTo2030:'أيام حتى ٢٠٣٠',
+    fifaWc:'كأس العالم FIFA', worldExpo:'إكسبو الدولي',
     sector:'القطاع', allProjects:'جميع المشاريع',
     sports:'الرياضة والأداء', realestate:'العقارات والمشاريع المختلطة',
     hospitality:'الضيافة والسياحة', culture:'الثقافة والترفيه',
     transport:'النقل والبنية التحتية', energy:'الطاقة والصناعة',
-    intelFeed:'آخر الأخبار', builtBy:'تصميم',
+    intelFeed:'آخر المستجدات', builtBy:'بناء',
     compare:'مقارنة', compareTitle:'مقارنة المشاريع', close:'إغلاق',
     toggleLabel:'English',
     investment:'الاستثمار', gdp:'المساهمة في الناتج المحلي', jobs:'الوظائف',
     status:'الحالة', completion:'الإنجاز', phase:'المرحلة',
     contractor:'المقاول', officialSource:'المصدر الرسمي', maps:'الخريطة',
+    vision2030:'رؤية ٢٠٣٠', latestIntel:'آخر الأخبار',
+    closeSheet:'✕',
   }
 };
+
+const FEED_AR=[
+  {label:"إجمالي مشاريع رؤية 2030",val:"<span>+2.14 تريليون$</span> عبر 38 مشروع"},
+  {label:"أعلى مشروع قيمة",val:"نيوم ذا لاين — <span>500 مليار$</span>"},
+  {label:"أكبر عدد وظائف",val:"مطار الملك سلمان — <span>500,000</span>"},
+  {label:"أقرب موعد تسليم",val:"جزيرة سندالة — <span>2026</span>"},
+  {label:"فرصة القطاع الرياضي",val:"<span>9.4 / 10</span> — كأس العالم 2034 + رؤية 2030"},
+  {label:"مشاريع العقارات",val:"<span>10</span> مشاريع عملاقة — +115 مليار$"},
+  {label:"استثمار قطاع الطاقة",val:"<span>+130 مليار$</span> طاقة نظيفة وتقليدية"},
+  {label:"ذروة البناء",val:"<span>2027–2028</span> عبر جميع القطاعات"},
+  {label:"توقعات زوار إكسبو 2030",val:"<span>50 مليون</span> زائر في 6 أشهر"},
+  {label:"ملاعب كأس العالم 2034",val:"<span>15</span> ملعب في 5 مدن"},
+];
 
 function toggleLang(){
   currentLang=currentLang==='en'?'ar':'en';
@@ -449,7 +476,7 @@ function applyLang(){
 
   // Header
   document.querySelector('.brand').innerHTML=t.brand;
-  document.querySelector('.back-link').textContent=t.backLink;
+  document.querySelector('.back-link').innerHTML=t.backLink;
 
   // Stats labels
   const labels=document.querySelectorAll('.slabel');
@@ -463,7 +490,6 @@ function applyLang(){
 
   // Filter buttons
   document.querySelector('.filter-label').textContent=t.sector;
-  const sectorKeys=['all','sports','realestate','hospitality','culture','transport','energy'];
   const sectorTexts=[t.allProjects,t.sports,t.realestate,t.hospitality,t.culture,t.transport,t.energy];
   document.querySelectorAll('.filter-btn').forEach((btn,i)=>{
     const dot=btn.querySelector('.fdot');
@@ -474,16 +500,33 @@ function applyLang(){
     btn.appendChild(count);
   });
 
-  // Intel feed title
-  document.querySelector('.mpanel-title').textContent=t.intelFeed;
+  // Update dynamic SECTOR_LABELS for popups
+  SECTOR_LABELS.sports=t.sports;
+  SECTOR_LABELS.realestate=t.realestate;
+  SECTOR_LABELS.hospitality=t.hospitality;
+  SECTOR_LABELS.culture=t.culture;
+  SECTOR_LABELS.transport=t.transport;
+  SECTOR_LABELS.energy=t.energy;
 
-  // Author
-  document.querySelector('.author-name').innerHTML=`${t.builtBy} <a href="https://ahmedmezil.com" target="_blank" rel="noopener">Ahmed Mezil</a>`;
+  // Intel feed title + rotate feed with correct language
+  document.querySelector('.mpanel-title').textContent=t.intelFeed;
+  rotateFeed();
+
+  // Author — keep name always LTR
+  document.querySelector('.author-name').innerHTML=isAr
+    ?`${t.builtBy} <a href="https://ahmedmezil.com" target="_blank" rel="noopener" style="direction:ltr;unicode-bidi:isolate">Ahmed Mezil</a>`
+    :`${t.builtBy} <a href="https://ahmedmezil.com" target="_blank" rel="noopener">Ahmed Mezil</a>`;
 
   // Compare
   document.getElementById('compare-btn').textContent=t.compare;
   document.querySelector('.cp-title').textContent=t.compareTitle;
   document.querySelector('.cp-close').innerHTML=`&#10005; ${t.close}`;
+
+  // Ticker tag
+  document.querySelector('.ttag').textContent=t.vision2030;
+
+  // Clock
+  updateClock();
 
   // Map labels
   if(window._mapLoaded){
@@ -834,7 +877,11 @@ const TICKER=[
 function updateClock(){
   const r=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Riyadh'}));
   document.getElementById('clock-time').textContent=[r.getHours(),r.getMinutes(),r.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');
-  document.getElementById('clock-date').textContent=r.toLocaleDateString('en-US',{timeZone:'Asia/Riyadh',weekday:'short',month:'short',day:'numeric'})+' · AST';
+  if(currentLang==='ar'){
+    document.getElementById('clock-date').textContent=r.toLocaleDateString('ar-SA',{timeZone:'Asia/Riyadh',weekday:'short',month:'short',day:'numeric'})+' · الرياض';
+  } else {
+    document.getElementById('clock-date').textContent=r.toLocaleDateString('en-US',{timeZone:'Asia/Riyadh',weekday:'short',month:'short',day:'numeric'})+' · AST';
+  }
 }
 setInterval(updateClock,1000); updateClock();
 document.getElementById('s-days').textContent=Math.ceil((new Date('2030-01-01')-new Date())/86400000).toLocaleString();
@@ -845,10 +892,12 @@ document.getElementById('ttrack').innerHTML=[...TICKER,...TICKER].map(t=>`<div c
 // ── FEED ──
 let fi=0;
 function rotateFeed(){
-  const slice=[]; for(let i=0;i<4;i++) slice.push(FEED[(fi+i)%FEED.length]);
+  const feed=currentLang==='ar'?FEED_AR:FEED;
+  const slice=[]; for(let i=0;i<4;i++) slice.push(feed[(fi+i)%feed.length]);
   document.getElementById('m-items').innerHTML=slice.map(e=>`<div class="mitem"><div class="mlabel">${e.label}</div><div class="mval">${e.val}</div></div>`).join('');
-  fi=(fi+1)%FEED.length;
-  document.getElementById('m-time').textContent=new Date().toLocaleTimeString('en-US',{timeZone:'Asia/Riyadh',hour:'2-digit',minute:'2-digit'})+' AST';
+  fi=(fi+1)%feed.length;
+  const locale=currentLang==='ar'?'ar-SA':'en-US';
+  document.getElementById('m-time').textContent=new Date().toLocaleTimeString(locale,{timeZone:'Asia/Riyadh',hour:'2-digit',minute:'2-digit'})+' AST';
 }
 rotateFeed(); setInterval(rotateFeed,4500);
 
@@ -881,7 +930,7 @@ function popupHTML(p){
   const t=UI_TEXT[currentLang];
   return `
     ${imgSection}
-    <div class="ptag" style="background:${c}18;color:${c}">${SECTOR_LABELS[p.sector]||p.sector} · Vision 2030</div>
+    <div class="ptag" style="background:${c}18;color:${c}">${SECTOR_LABELS[p.sector]||p.sector} · ${t.vision2030}</div>
     <div class="pbody">
       <div class="pname">${p.nameAr&&currentLang==='ar'?p.nameAr:p.name}</div>
       <div class="p-insight" style="background:${c}10;border-color:${c};color:${c}">${p.descAr&&currentLang==='ar'?p.descAr:p.description}</div>
@@ -906,8 +955,9 @@ function popupHTML(p){
 function newsHTML(id){
   const articles = NEWS_DATA[id];
   if(!articles || !articles.length) return '';
+  const t=UI_TEXT[currentLang];
   return `<div class="p-news">
-    <div class="p-news-hdr">Latest Intel</div>
+    <div class="p-news-hdr">${t.latestIntel}</div>
     ${articles.map(a=>`<div class="p-news-item">
       <a class="p-news-link" href="${a.link}" target="_blank" rel="noopener">${a.title}</a>
       <div class="p-news-meta">${a.source}${a.date?' · '+a.date:''}</div>
