@@ -102,14 +102,20 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 .p-link.primary{background:var(--green-dim);border-color:var(--green);color:var(--green)}
 .p-link.primary:hover{background:rgba(0,232,122,0.18)}
 
-/* ── METRICS PANEL ── */
+/* ── METRICS PANEL (collapsible, left side) ── */
 #metrics{
-  position:absolute;bottom:46px;right:22px;z-index:20;
+  position:absolute;bottom:46px;left:22px;z-index:20;
   width:220px;background:var(--surface);
   border:1px solid var(--border);border-radius:6px;
   overflow:hidden;backdrop-filter:blur(14px);
+  transition:height 0.3s ease,opacity 0.3s ease;
 }
-.mpanel-hdr{display:flex;align-items:center;gap:7px;padding:8px 12px;border-bottom:1px solid var(--border)}
+#metrics.collapsed #m-items{display:none}
+#metrics.collapsed{border-radius:6px}
+.mpanel-hdr{display:flex;align-items:center;gap:7px;padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;transition:border-color 0.2s}
+#metrics.collapsed .mpanel-hdr{border-bottom:1px solid transparent}
+.mpanel-toggle{margin-left:4px;font-size:10px;color:var(--dim);transition:transform 0.25s ease;display:inline-block}
+#metrics.collapsed .mpanel-toggle{transform:rotate(-90deg)}
 .live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1.8s ease-in-out infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.1}}
 .mpanel-title{font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
@@ -120,6 +126,12 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 .mlabel{font-size:7px;font-weight:500;color:var(--muted);margin-bottom:2px;letter-spacing:0.04em}
 .mval{font-size:11px;font-weight:600;color:#fff;line-height:1.2}
 .mval span{color:var(--green)}
+
+/* ── AUTHOR ── */
+#author{position:absolute;bottom:50px;right:22px;z-index:20;text-align:right;pointer-events:none}
+.author-name{font-size:9px;font-weight:500;color:var(--dim);letter-spacing:0.04em}
+.author-name a{color:var(--green);text-decoration:none;pointer-events:all;transition:color 0.15s}
+.author-name a:hover{color:#fff}
 
 /* ── CLOCK ── */
 #clock{position:absolute;top:14px;right:22px;z-index:21;text-align:right;pointer-events:none}
@@ -137,6 +149,16 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 .mapboxgl-ctrl-attrib,.mapboxgl-ctrl-logo{display:none!important}
 .mapboxgl-ctrl-group{background:rgba(10,10,10,0.88)!important;border:1px solid var(--border)!important;border-radius:4px!important}
 .mapboxgl-ctrl-group button{background:transparent!important}
+
+/* ── MOBILE: start feed collapsed ── */
+@media(max-width:600px){
+  #metrics{width:190px}
+  #metrics.collapsed-mobile #m-items{display:none}
+  #metrics.collapsed-mobile .mpanel-toggle{transform:rotate(-90deg)}
+  #metrics.collapsed-mobile .mpanel-hdr{border-bottom:1px solid transparent}
+  #author{bottom:46px;right:12px}
+  #author .author-name{font-size:8px}
+}
 </style>
 </head>
 <body>
@@ -156,8 +178,8 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 
 <!-- STATS BAR -->
 <div id="statsbar">
-  <div class="sblock"><div class="sval" id="s-projects">27</div><div class="slabel">Projects</div></div>
-  <div class="sblock"><div class="sval green">$2.1T</div><div class="slabel">Total Pipeline</div></div>
+  <div class="sblock"><div class="sval" id="s-projects">35</div><div class="slabel">Projects</div></div>
+  <div class="sblock"><div class="sval green">$2.13T</div><div class="slabel">Total Pipeline</div></div>
   <div class="sblock"><div class="sval" id="s-days">—</div><div class="slabel">Days to 2030</div></div>
   <div class="sblock"><div class="sval green">2034</div><div class="slabel">FIFA World Cup</div></div>
   <div class="sblock"><div class="sval green">2030</div><div class="slabel">World Expo</div></div>
@@ -166,7 +188,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 <!-- FILTERS -->
 <div id="filters">
   <div class="filter-label">Sector</div>
-  <button class="filter-btn" data-sector="all"><span class="fdot" style="background:var(--green)"></span>All Projects<span class="fcount" id="c-all">30</span></button>
+  <button class="filter-btn" data-sector="all"><span class="fdot" style="background:var(--green)"></span>All Projects<span class="fcount" id="c-all">35</span></button>
   <button class="filter-btn" data-sector="sports"><span class="fdot" style="background:var(--sports)"></span>Sports & Performance<span class="fcount" id="c-sports"></span></button>
   <button class="filter-btn" data-sector="realestate"><span class="fdot" style="background:var(--realestate)"></span>Real Estate & Mixed<span class="fcount" id="c-realestate"></span></button>
   <button class="filter-btn" data-sector="hospitality"><span class="fdot" style="background:var(--hospitality)"></span>Hospitality & Tourism<span class="fcount" id="c-hospitality"></span></button>
@@ -175,14 +197,20 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
   <button class="filter-btn" data-sector="energy"><span class="fdot" style="background:var(--energy)"></span>Energy & Industry<span class="fcount" id="c-energy"></span></button>
 </div>
 
-<!-- METRICS PANEL -->
+<!-- METRICS PANEL (collapsible) -->
 <div id="metrics">
-  <div class="mpanel-hdr">
+  <div class="mpanel-hdr" onclick="document.getElementById('metrics').classList.toggle('collapsed')">
     <div class="live-dot"></div>
     <div class="mpanel-title">Intel Feed</div>
     <div class="mpanel-time" id="m-time">LIVE</div>
+    <span class="mpanel-toggle">▾</span>
   </div>
   <div id="m-items"></div>
+</div>
+
+<!-- AUTHOR -->
+<div id="author">
+  <div class="author-name">Built by <a href="https://ahmedmezil.com" target="_blank" rel="noopener">Ahmed Mezil</a></div>
 </div>
 
 <!-- TICKER -->
@@ -401,6 +429,53 @@ const PROJECTS = [
     description:"$40B capital investment program 2024–2028 to maintain 12M bbl/day production capacity, expand gas production, and grow domestic refining. Anchors KSA fiscal revenue.",
     image:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80",
     link:"https://www.aramco.com"
+  },
+
+  // ── NEW PROJECTS (2025–2026 updates) ──
+  {
+    id:31, sector:"realestate",
+    name:"Rou'a Al Madinah — Madinah Masterplan",
+    lat:24.4686, lng:39.6142,
+    value:"$15B", gdp:"$18B", jobs:"93,000", status:"Under Construction", completion:"2030", phase:"Phase 1 Active", contractor:"Rou'a Al Madinah Holding (PIF)",
+    description:"Mega-development surrounding the Prophet's Mosque. Hotels, residential, cultural districts, and transit upgrades to serve 30M+ pilgrims annually.",
+    image:"https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=800&q=80",
+    link:"https://www.rfrmd.com.sa"
+  },
+  {
+    id:32, sector:"energy",
+    name:"Ceer & Lucid EV Manufacturing Hub",
+    lat:26.2172, lng:50.1971,
+    value:"$3.4B", gdp:"$8B", jobs:"30,000", status:"Under Construction", completion:"2027", phase:"Factory Build-out", contractor:"Ceer (PIF + Foxconn) + Lucid Motors",
+    description:"Saudi Arabia's first EV manufacturing complex in King Abdullah Economic City. Ceer (mass-market) and Lucid (luxury) producing 150,000+ vehicles per year.",
+    image:"https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
+    link:"https://www.ceer.sa"
+  },
+  {
+    id:33, sector:"hospitality",
+    name:"The Rig — Offshore Adventure Destination",
+    lat:27.0000, lng:49.7000,
+    value:"$5B", gdp:"$3.8B", jobs:"7,000", status:"Under Construction", completion:"2028", phase:"Platform Conversion", contractor:"Saudi Aramco + PIF",
+    description:"World's first tourism destination on repurposed offshore oil platforms in the Arabian Gulf. Extreme sports, hotels, restaurants, and amusement rides over open water.",
+    image:"https://images.unsplash.com/photo-1518623489648-a173ef7824f3?w=800&q=80",
+    link:"https://www.therig.sa"
+  },
+  {
+    id:34, sector:"culture",
+    name:"King Abdulaziz Centre for World Culture (Expansion)",
+    lat:21.4225, lng:39.8262,
+    value:"$2.5B", gdp:"$4B", jobs:"15,000", status:"Planning", completion:"2029", phase:"Master Planning", contractor:"Ministry of Culture + PIF",
+    description:"Jeddah Historic District UNESCO-backed cultural megaproject. Restoration of Al-Balad heritage zone with museums, galleries, boutique hotels, and creative industries hub.",
+    image:"https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80",
+    link:"https://www.moc.gov.sa"
+  },
+  {
+    id:35, sector:"transport",
+    name:"Jeddah Rapid Transit — BRT & Metro",
+    lat:21.5433, lng:39.1728,
+    value:"$5.5B", gdp:"$9B", jobs:"42,000", status:"Under Construction", completion:"2029", phase:"Phase 1 — BRT Lines", contractor:"Jeddah Transit Authority",
+    description:"Three-phase rapid transit system for Jeddah. BRT network plus metro lines connecting airport, downtown, waterfront, and Makkah corridor. 1.2M daily riders projected.",
+    image:"https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&q=80",
+    link:"https://www.jeddah.gov.sa"
   }
 ];
 
@@ -410,12 +485,12 @@ const EMOJI={sports:'🏟️',realestate:'🏗️',hospitality:'🏨',culture:'�
 const SECTOR_LABELS={sports:'Sports & Performance',realestate:'Real Estate',hospitality:'Hospitality & Tourism',culture:'Culture & Entertainment',transport:'Transport & Infra',energy:'Energy & Industry'};
 
 const FEED=[
-  {label:"Total Vision 2030 Pipeline",val:"<span>$2.1T+</span> across 30 tracked projects"},
+  {label:"Total Vision 2030 Pipeline",val:"<span>$2.13T+</span> across 35 tracked projects"},
   {label:"Highest Value Project",val:"NEOM The Line — <span>$500B</span>"},
   {label:"Most Jobs Created",val:"King Salman Airport — <span>500,000</span>"},
   {label:"Nearest Deadline",val:"Sindalah Island — <span>2026</span>"},
   {label:"Sports Opportunity Score",val:"<span>9.4 / 10</span> — FIFA 2034 + V2030"},
-  {label:"Real Estate Projects Tracked",val:"<span>7</span> mega developments — $100B+"},
+  {label:"Real Estate Projects Tracked",val:"<span>10</span> mega developments — $115B+"},
   {label:"Energy Sector Investment",val:"<span>$130B+</span> in green & conventional energy"},
   {label:"HarakaMed Target Sites",val:"<span>6</span> high-fit sports venues"},
   {label:"Construction Peak Year",val:"<span>2027–2028</span> across all sectors"},
@@ -434,6 +509,10 @@ const TICKER=[
   "Expo 2030 Riyadh · 50M visitors · 180 nations · <strong>$38B</strong> economic impact",
   "NEOM Solar & Wind · <strong>$50B</strong> clean energy commitment by 2030",
   "Saudi Aramco Expansion · <strong>$40B</strong> upstream investment 2024–2028",
+  "Rou'a Al Madinah · <strong>$15B</strong> · Holy City masterplan · 30M pilgrims/year",
+  "Ceer EV Factory · Saudi Arabia's first electric vehicle · <strong>$3.4B</strong>",
+  "The Rig · World's first offshore tourism platform · <strong>$5B</strong>",
+  "Jeddah Rapid Transit · BRT & Metro · <strong>$5.5B</strong> · 1.2M daily riders",
   "HarakaMed · AI markerless motion analysis · ahmedmezil.com",
   "Riyadh Intelligence Platform · riyadh.ahmedmezil.com",
 ];
@@ -624,6 +703,9 @@ document.querySelectorAll('.filter-btn').forEach(btn=>{
 });
 
 map.addControl(new mapboxgl.NavigationControl({showCompass:true}),'bottom-left');
+
+// Auto-collapse feed on mobile
+if(window.innerWidth<=600) document.getElementById('metrics').classList.add('collapsed');
 </script>
 </body>
 </html>

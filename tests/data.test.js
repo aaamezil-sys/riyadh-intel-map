@@ -7,8 +7,8 @@ import {
 describe('PROJECTS data integrity', () => {
   const requiredFields = ['id', 'sector', 'name', 'lat', 'lng', 'value', 'gdp', 'jobs', 'status', 'completion', 'phase', 'contractor', 'description'];
 
-  it('should have 30 projects', () => {
-    expect(PROJECTS).toHaveLength(30);
+  it('should have 35 projects', () => {
+    expect(PROJECTS).toHaveLength(35);
   });
 
   it('every project should have all required fields', () => {
