@@ -18,7 +18,7 @@ jobs:
         with:
           source_file: 'index.html'
           destination_repo: 'aaamezil-sys/riyadh-map'
-          destination_folder: 'riyadh-intel-map'
+          destination_folder: 'public/riyadh-intel-map'
           user_email: 'github-actions[bot]@users.noreply.github.com'
           user_name: 'github-actions[bot]'
           commit_message: 'Deploy updated index.html from riyadh-intel-map'

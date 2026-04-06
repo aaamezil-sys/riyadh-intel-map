@@ -3,13 +3,13 @@
 ## Deployment
 
 - **Source repo**: `aaamezil-sys/riyadh-intel-map` (THIS REPO — all edits happen here)
-- **Deployment repo**: `aaamezil-sys/riyadh-map` (serves the live site, contains a copy of index.html at `riyadh-intel-map/index.html`)
+- **Deployment repo**: `aaamezil-sys/riyadh-map` (Next.js app, serves static files from `public/riyadh-intel-map/index.html`)
 - **Live URL**: https://riyadh.ahmedmezil.com/riyadh-intel-map
 
 After making any changes to `index.html`, always:
 1. Commit and push to `main` in THIS repo (`riyadh-intel-map`)
-2. ALSO copy the updated `index.html` to the deployment repo (`riyadh-map`) at path `riyadh-intel-map/index.html`
-3. If you have access to the `riyadh-map` repo, push the update there too. If not, tell the user they need to manually copy index.html to the deployment repo, or add `riyadh-map` to the session's allowed repositories.
+2. The GitHub Action auto-deploys `index.html` to `riyadh-map/public/riyadh-intel-map/index.html`
+3. If manually deploying, copy `index.html` to the `public/riyadh-intel-map/` folder in the `riyadh-map` repo
 
 ## Project Structure
 
