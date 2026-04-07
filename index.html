@@ -55,9 +55,9 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 }
 #filter-expand:hover{color:#fff;border-color:var(--border2)}
 #filter-expand .fe-arrow{font-size:8px;margin-left:4px;transition:transform 0.2s}
-#filters:not(.collapsed) #filter-expand{display:none}
 #filters.collapsed .filter-btn[data-sector]:not([data-sector="all"]){display:none}
 #filters.collapsed #list-toggle{display:none}
+#filters.collapsed #filter-expand .fe-arrow{transform:rotate(-90deg)}
 .filter-btn{
   display:flex;align-items:center;gap:8px;padding:6px 11px;
   background:rgba(10,10,10,0.84);border:1px solid var(--border);border-radius:4px;
@@ -429,7 +429,7 @@ html[dir="rtl"] #list-panel.open{transform:translateX(0)}
 <div id="filters">
   <div class="filter-label" onclick="document.getElementById('filters').classList.toggle('collapsed')">Sector <span class="fl-arrow">▼</span></div>
   <button class="filter-btn" data-sector="all"><span class="fdot" style="background:var(--green)"></span>All Projects<span class="fcount" id="c-all">38</span></button>
-  <button id="filter-expand" onclick="document.getElementById('filters').classList.toggle('collapsed')"><span id="fe-label">More sectors</span> <span class="fe-arrow">▼</span></button>
+  <button id="filter-expand" onclick="toggleFilters()"><span id="fe-label">Expand sectors</span> <span class="fe-arrow">▼</span></button>
   <button class="filter-btn" data-sector="sports"><span class="fdot" style="background:var(--sports)"></span>Sports & Performance<span class="fcount" id="c-sports"></span></button>
   <button class="filter-btn" data-sector="realestate"><span class="fdot" style="background:var(--realestate)"></span>Real Estate & Mixed<span class="fcount" id="c-realestate"></span></button>
   <button class="filter-btn" data-sector="hospitality"><span class="fdot" style="background:var(--hospitality)"></span>Hospitality & Tourism<span class="fcount" id="c-hospitality"></span></button>
@@ -510,7 +510,7 @@ const UI_TEXT={
     hospitality:'Hospitality & Tourism', culture:'Culture & Entertainment',
     transport:'Transport & Infra', energy:'Energy & Industry',
     intelFeed:'Intel Feed', builtBy:'Built by',
-    compare:'Compare', compareTitle:'Project Comparison', close:'Close', listView:'List View', searchProjects:'Search projects...', moreSectors:'More sectors',
+    compare:'Compare', compareTitle:'Project Comparison', close:'Close', listView:'List View', searchProjects:'Search projects...', expandSectors:'Expand sectors', collapseSectors:'Collapse',
     toggleLabel:'عربي',
     investment:'Investment', gdp:'GDP Contribution', jobs:'Jobs',
     status:'Status', completion:'Completion', phase:'Phase',
@@ -528,7 +528,7 @@ const UI_TEXT={
     hospitality:'الضيافة والسياحة', culture:'الثقافة والترفيه',
     transport:'النقل والبنية التحتية', energy:'الطاقة والصناعة',
     intelFeed:'آخر المستجدات', builtBy:'بناء',
-    compare:'مقارنة', compareTitle:'مقارنة المشاريع', close:'إغلاق', listView:'عرض القائمة', searchProjects:'بحث عن مشاريع...', moreSectors:'المزيد من القطاعات',
+    compare:'مقارنة', compareTitle:'مقارنة المشاريع', close:'إغلاق', listView:'عرض القائمة', searchProjects:'بحث عن مشاريع...', expandSectors:'توسيع القطاعات', collapseSectors:'طي',
     toggleLabel:'English',
     investment:'الاستثمار', gdp:'المساهمة في الناتج المحلي', jobs:'الوظائف',
     status:'الحالة', completion:'الإنجاز', phase:'المرحلة',
@@ -610,7 +610,8 @@ function applyLang(){
 
   // List view + expand
   document.getElementById('list-toggle-label').textContent=t.listView;
-  document.getElementById('fe-label').textContent=t.moreSectors;
+  const isCollapsed=document.getElementById('filters').classList.contains('collapsed');
+  document.getElementById('fe-label').textContent=isCollapsed?t.expandSectors:t.collapseSectors;
   document.getElementById('lp-search').placeholder=t.searchProjects;
   if(document.getElementById('list-panel').classList.contains('open')) renderListPanel();
 
@@ -1385,6 +1386,13 @@ function applyFilter(sector,fly=true){
     energy:{center:[46.5,25.5],zoom:5.8,pitch:36},
   };
   map.flyTo({...(ft[sector]||ft.all),duration:1300,essential:true});
+}
+
+function toggleFilters(){
+  const el=document.getElementById('filters');
+  el.classList.toggle('collapsed');
+  const t=UI_TEXT[currentLang];
+  document.getElementById('fe-label').textContent=el.classList.contains('collapsed')?t.expandSectors:t.collapseSectors;
 }
 
 function setActive(sector){
