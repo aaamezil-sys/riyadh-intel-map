@@ -58,6 +58,62 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 .fdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .fcount{margin-left:auto;padding-left:12px;font-size:10px;opacity:0.35}
 
+/* ── LIST VIEW TOGGLE ── */
+#list-toggle{
+  display:flex;align-items:center;gap:6px;padding:6px 11px;margin-top:4px;
+  background:rgba(10,10,10,0.84);border:1px solid var(--green);border-radius:4px;
+  cursor:pointer;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;
+  color:var(--green);backdrop-filter:blur(12px);white-space:nowrap;transition:background 0.15s;
+}
+#list-toggle:hover{background:rgba(0,232,122,0.08)}
+#list-toggle .lt-icon{font-size:14px;line-height:1}
+
+/* ── LIST PANEL ── */
+#list-panel{
+  position:fixed;top:0;left:0;bottom:0;width:360px;z-index:200;
+  background:rgba(8,8,8,0.96);backdrop-filter:blur(24px);
+  border-right:1px solid var(--border2);
+  transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+#list-panel.open{transform:translateX(0)}
+.lp-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.lp-title{font-size:15px;font-weight:700;color:#fff;letter-spacing:0.02em}
+.lp-count{font-size:11px;color:var(--muted);font-weight:500}
+.lp-close{
+  width:32px;height:32px;border-radius:50%;border:none;
+  background:rgba(255,255,255,0.08);color:#fff;font-size:18px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.15s;
+}
+.lp-close:hover{background:rgba(255,255,255,0.15)}
+.lp-search{
+  margin:12px 16px;padding:9px 14px;border-radius:6px;border:1px solid var(--border);
+  background:rgba(255,255,255,0.04);color:#fff;font-family:'Poppins',sans-serif;
+  font-size:13px;outline:none;transition:border-color 0.15s;
+}
+.lp-search:focus{border-color:var(--green)}
+.lp-search::placeholder{color:var(--dim)}
+.lp-body{flex:1;overflow-y:auto;padding:0 0 20px}
+.lp-sector-group{margin-top:8px}
+.lp-sector-hdr{
+  position:sticky;top:0;padding:8px 20px;font-size:9px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;background:rgba(8,8,8,0.95);
+  border-bottom:1px solid rgba(255,255,255,0.04);z-index:1;
+}
+.lp-item{
+  display:flex;align-items:center;gap:12px;padding:11px 20px;
+  cursor:pointer;transition:background 0.12s;border-bottom:1px solid rgba(255,255,255,0.03);
+}
+.lp-item:hover{background:rgba(255,255,255,0.04)}
+.lp-item-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.lp-item-info{flex:1;min-width:0}
+.lp-item-name{font-size:12px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lp-item-meta{font-size:10px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lp-item-val{font-size:11px;font-weight:700;color:var(--green);flex-shrink:0;text-align:right}
+
 /* ── POPUP ── */
 .mapboxgl-popup{max-width:330px!important}
 .mapboxgl-popup-content{
@@ -284,6 +340,12 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
   .ttag{font-size:6px;padding:0 10px}
   .titem{font-size:8px;padding:0 18px}
 
+  /* List panel — full width on mobile */
+  #list-panel{width:100%;border-right:none}
+  #list-toggle{padding:5px 9px;font-size:11px}
+  .lp-item{padding:10px 16px}
+  .lp-search{margin:10px 12px;font-size:12px}
+
   /* Compare panel — vertical cards on mobile */
   .cp-grid{padding:0 14px 40px}
   .cp-grid.mobile-cards{display:flex;flex-direction:column;gap:16px}
@@ -313,6 +375,8 @@ html[dir="rtl"] .mpanel-time{margin-left:0;margin-right:auto}
 html[dir="rtl"] #mobile-sheet .sheet-close{right:auto;left:14px}
 html[dir="rtl"] .mapboxgl-popup-close-button{right:auto!important;left:8px!important}
 html[dir="rtl"] .author-name a{direction:ltr;unicode-bidi:isolate}
+html[dir="rtl"] #list-panel{left:auto;right:0;border-right:none;border-left:1px solid var(--border2);transform:translateX(100%)}
+html[dir="rtl"] #list-panel.open{transform:translateX(0)}
 @media(max-width:600px){
   html[dir="rtl"] #filters{left:auto;right:14px}
   html[dir="rtl"] #metrics{left:auto;right:14px}
@@ -359,6 +423,17 @@ html[dir="rtl"] .author-name a{direction:ltr;unicode-bidi:isolate}
   <button class="filter-btn" data-sector="culture"><span class="fdot" style="background:var(--culture)"></span>Culture & Entertainment<span class="fcount" id="c-culture"></span></button>
   <button class="filter-btn" data-sector="transport"><span class="fdot" style="background:var(--transport)"></span>Transport & Infra<span class="fcount" id="c-transport"></span></button>
   <button class="filter-btn" data-sector="energy"><span class="fdot" style="background:var(--energy)"></span>Energy & Industry<span class="fcount" id="c-energy"></span></button>
+  <button id="list-toggle" onclick="toggleListPanel()"><span class="lt-icon">☰</span> <span id="list-toggle-label">List View</span></button>
+</div>
+
+<!-- LIST PANEL -->
+<div id="list-panel">
+  <div class="lp-header">
+    <div><div class="lp-title" id="lp-title">All Projects</div><div class="lp-count" id="lp-count">38 projects</div></div>
+    <button class="lp-close" onclick="closeListPanel()">&times;</button>
+  </div>
+  <input class="lp-search" type="text" id="lp-search" placeholder="Search projects..." oninput="renderListPanel()">
+  <div class="lp-body" id="lp-body"></div>
 </div>
 
 <!-- MOBILE BOTTOM SHEET -->
@@ -422,7 +497,7 @@ const UI_TEXT={
     hospitality:'Hospitality & Tourism', culture:'Culture & Entertainment',
     transport:'Transport & Infra', energy:'Energy & Industry',
     intelFeed:'Intel Feed', builtBy:'Built by',
-    compare:'Compare', compareTitle:'Project Comparison', close:'Close',
+    compare:'Compare', compareTitle:'Project Comparison', close:'Close', listView:'List View', searchProjects:'Search projects...',
     toggleLabel:'عربي',
     investment:'Investment', gdp:'GDP Contribution', jobs:'Jobs',
     status:'Status', completion:'Completion', phase:'Phase',
@@ -440,7 +515,7 @@ const UI_TEXT={
     hospitality:'الضيافة والسياحة', culture:'الثقافة والترفيه',
     transport:'النقل والبنية التحتية', energy:'الطاقة والصناعة',
     intelFeed:'آخر المستجدات', builtBy:'بناء',
-    compare:'مقارنة', compareTitle:'مقارنة المشاريع', close:'إغلاق',
+    compare:'مقارنة', compareTitle:'مقارنة المشاريع', close:'إغلاق', listView:'عرض القائمة', searchProjects:'بحث عن مشاريع...',
     toggleLabel:'English',
     investment:'الاستثمار', gdp:'المساهمة في الناتج المحلي', jobs:'الوظائف',
     status:'الحالة', completion:'الإنجاز', phase:'المرحلة',
@@ -519,6 +594,11 @@ function applyLang(){
   document.querySelector('.author-name').innerHTML=isAr
     ?`${t.builtBy} <a href="https://ahmedmezil.com" target="_blank" rel="noopener" style="direction:ltr;unicode-bidi:isolate">Ahmed Mezil</a>`
     :`${t.builtBy} <a href="https://ahmedmezil.com" target="_blank" rel="noopener">Ahmed Mezil</a>`;
+
+  // List view
+  document.getElementById('list-toggle-label').textContent=t.listView;
+  document.getElementById('lp-search').placeholder=t.searchProjects;
+  if(document.getElementById('list-panel').classList.contains('open')) renderListPanel();
 
   // Compare
   document.getElementById('compare-btn').textContent=t.compare;
@@ -1286,6 +1366,7 @@ function applyFilter(sector,fly=true){
   closeMobileSheet();
   if(map.getSource('projects')) map.getSource('projects').setData(buildGeoJSON(sector));
   updateCounts(sector); setActive(sector);
+  if(document.getElementById('list-panel').classList.contains('open')) renderListPanel();
   if(!fly) return;
   const ft={
     all:{center:[44.5,26.0],zoom:5.2,pitch:28},
@@ -1311,6 +1392,79 @@ function setActive(sector){
 document.querySelectorAll('.filter-btn').forEach(btn=>{
   btn.addEventListener('click',()=>applyFilter(btn.dataset.sector));
 });
+
+// ── LIST PANEL ──
+const SECTOR_ORDER=['sports','realestate','hospitality','culture','transport','energy'];
+function toggleListPanel(){
+  const panel=document.getElementById('list-panel');
+  if(panel.classList.contains('open')){closeListPanel();return;}
+  panel.classList.add('open');
+  renderListPanel();
+}
+function closeListPanel(){
+  document.getElementById('list-panel').classList.remove('open');
+  document.getElementById('lp-search').value='';
+}
+function renderListPanel(){
+  const query=(document.getElementById('lp-search').value||'').toLowerCase().trim();
+  const sector=activeFilter||'all';
+  const isAr=currentLang==='ar';
+  const filtered=PROJECTS.filter(p=>{
+    if(sector!=='all'&&p.sector!==sector) return false;
+    if(query){
+      const name=isAr&&p.nameAr?p.nameAr:p.name;
+      return name.toLowerCase().includes(query)||p.value.toLowerCase().includes(query)||p.status.toLowerCase().includes(query);
+    }
+    return true;
+  });
+  // Group by sector
+  const groups={};
+  filtered.forEach(p=>{
+    if(!groups[p.sector]) groups[p.sector]=[];
+    groups[p.sector].push(p);
+  });
+  const sLabels=SECTOR_LABELS;
+  let html='';
+  SECTOR_ORDER.forEach(s=>{
+    if(!groups[s]) return;
+    const c=COLORS[s];
+    html+=`<div class="lp-sector-group">`;
+    html+=`<div class="lp-sector-hdr" style="color:${c}">${EMOJI[s]} ${sLabels[s]||s} <span style="opacity:0.4;font-weight:400">(${groups[s].length})</span></div>`;
+    groups[s].forEach(p=>{
+      const name=isAr&&p.nameAr?p.nameAr:p.name;
+      html+=`<div class="lp-item" onclick="selectFromList(${p.id})">
+        <div class="lp-item-dot" style="background:${c}"></div>
+        <div class="lp-item-info"><div class="lp-item-name">${name}</div><div class="lp-item-meta">${p.status} · ${p.completion}</div></div>
+        <div class="lp-item-val">${p.value}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  document.getElementById('lp-body').innerHTML=html;
+  const title=isAr?(sector==='all'?'جميع المشاريع':(sLabels[sector]||sector)):(sector==='all'?'All Projects':(sLabels[sector]||sector));
+  document.getElementById('lp-title').textContent=title;
+  document.getElementById('lp-count').textContent=isAr?`${filtered.length} مشروع`:`${filtered.length} projects`;
+}
+function selectFromList(id){
+  const p=PROJECTS.find(x=>x.id===id);if(!p) return;
+  closeListPanel();
+  clearSelection();
+  activeProjectId=p.id;
+  map.setFeatureState({source:'projects',id:p.id},{selected:true});
+  map.flyTo({center:[p.lng,p.lat],zoom:12,pitch:45,duration:1200,essential:true});
+  setTimeout(()=>{
+    if(window.innerWidth<=600){
+      document.getElementById('sheet-content').innerHTML=popupHTML(p);
+      document.getElementById('mobile-sheet').classList.add('open');
+      document.getElementById('metrics').classList.add('collapsed');
+    } else {
+      if(activePopup) activePopup.remove();
+      activePopup=new mapboxgl.Popup({closeButton:true,maxWidth:'340px',offset:18})
+        .setLngLat([p.lng,p.lat]).setHTML(popupHTML(p)).addTo(map);
+      activePopup.on('close',()=>{activePopup=null;clearSelection();});
+    }
+  },800);
+}
 
 map.addControl(new mapboxgl.NavigationControl({showCompass:true}),'bottom-left');
 
