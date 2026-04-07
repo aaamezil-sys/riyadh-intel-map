@@ -35,8 +35,10 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 
 /* ── STATS BAR ── */
 #statsbar{
-  position:absolute;top:70px;left:22px;right:22px;z-index:20;
+  position:absolute;top:74px;left:22px;right:22px;z-index:20;
   display:flex;gap:0;pointer-events:none;
+  background:rgba(10,10,10,0.7);backdrop-filter:blur(8px);
+  padding:8px 14px;border-radius:6px;border:1px solid var(--border);
 }
 .sblock{display:flex;flex-direction:column;gap:1px;padding-right:20px;margin-right:20px;border-right:1px solid var(--border)}
 .sblock:last-child{border-right:none}
@@ -45,7 +47,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 .slabel{font-size:10px;font-weight:400;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase}
 
 /* ── FILTERS ── */
-#filters{position:absolute;top:120px;left:22px;z-index:20;display:flex;flex-direction:column;gap:3px}
+#filters{position:absolute;top:132px;left:22px;z-index:20;display:flex;flex-direction:column;gap:3px}
 .filter-label{display:none}
 #filter-expand{
   display:none;align-items:center;gap:6px;padding:7px 12px;margin-top:4px;
@@ -325,11 +327,11 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
   #header{padding:10px 14px 0}
   .brand{font-size:20px}
   .back-link{font-size:10px}
-  #statsbar{top:60px;left:14px;right:14px;flex-wrap:wrap;gap:0}
+  #statsbar{top:58px;left:14px;right:14px;flex-wrap:wrap;gap:0;padding:6px 10px;border-radius:5px}
   .sblock{padding-right:12px;margin-right:12px}
   .sval{font-size:16px}
   .slabel{font-size:9px}
-  #filters{top:112px;left:14px;gap:2px}
+  #filters{top:118px;left:14px;gap:2px}
   .filter-btn{padding:6px 10px;font-size:13px}
   .fcount{font-size:10px;padding-left:8px}
   #filter-expand{display:flex}
@@ -1190,7 +1192,7 @@ function newsHTML(id){
 mapboxgl.accessToken='pk.eyJ1IjoiYWFhbWV6aWwiLCJhIjoiY21uM25tbGczMWlhbzJwcHpocWxqY3g3NCJ9.C8O9Kilsq6FoKn144Sibng';
 
 const map=new mapboxgl.Map({
-  container:'map', style:'mapbox://styles/mapbox/standard',
+  container:'map', style:'mapbox://styles/mapbox/dark-v11',
   center:[44.5,26.0], zoom:5.2, pitch:28, bearing:-4, antialias:true
 });
 
@@ -1208,22 +1210,36 @@ function buildGeoJSON(sector){
 }
 
 map.on('load',()=>{
-  // Configure Mapbox Standard style — desert theme with road labels
-  try{
-    map.setConfigProperty('basemap','lightPreset','night');
-    map.setConfigProperty('basemap','showRoadLabels',true);
-    map.setConfigProperty('basemap','showPointOfInterestLabels',true);
-    map.setConfigProperty('basemap','showTransitLabels',true);
-    map.setConfigProperty('basemap','showPlaceLabels',true);
-    console.log('[RIP] Standard style configured: dusk + road labels');
-  }catch(e){ console.warn('[RIP] Config properties failed:',e); }
+  window._mapLoaded=true;
+  map.setFog({color:'rgb(10,10,10)','high-color':'rgb(12,14,20)','horizon-blend':0.015,'space-color':'rgb(4,4,6)','star-intensity':0.55});
 
-  map.setFog({color:'#0a0a0a','high-color':'#0c0e14','horizon-blend':0.015,'space-color':'#060608','star-intensity':0.5});
+  // Tint water and land
+  map.setPaintProperty('water','fill-color','#0a2540');
+  map.setPaintProperty('land','background-color','#14120e');
+  try{ map.setPaintProperty('landcover','fill-color','#1a1710'); }catch(e){}
+  try{ map.setPaintProperty('national-park','fill-color','#16200e'); }catch(e){}
+
+  // Brighten road lines and labels
+  const allLayers=map.getStyle().layers||[];
+  allLayers.forEach(layer=>{
+    const id=layer.id;
+    // Road lines — increase opacity
+    if(layer.type==='line'&&/road|bridge|tunnel/i.test(id)){
+      try{ map.setPaintProperty(id,'line-opacity',0.7); }catch(e){}
+    }
+    // Road labels — make visible and bright
+    if(layer.type==='symbol'&&/road|shield|motorway|trunk|route/i.test(id)){
+      try{ map.setLayoutProperty(id,'visibility','visible'); }catch(e){}
+      try{ map.setPaintProperty(id,'text-color','rgba(200,200,190,0.85)'); }catch(e){}
+      try{ map.setPaintProperty(id,'text-halo-color','rgba(0,0,0,0.9)'); }catch(e){}
+      try{ map.setPaintProperty(id,'text-halo-width',2); }catch(e){}
+    }
+  });
 
   map.addSource('projects',{type:'geojson',data:buildGeoJSON('all'),promoteId:'id'});
 
   // Selected pulse — bright animated ring for active project
-  map.addLayer({id:'selected-pulse',type:'circle',source:'projects',slot:'top',paint:{
+  map.addLayer({id:'selected-pulse',type:'circle',source:'projects',paint:{
     'circle-radius':['case',['boolean',['feature-state','selected'],false],26,0],
     'circle-color':'transparent',
     'circle-stroke-width':['case',['boolean',['feature-state','selected'],false],2.5,0],
@@ -1232,7 +1248,7 @@ map.on('load',()=>{
   }});
 
   // Selected glow — bright halo behind selected project
-  map.addLayer({id:'selected-glow',type:'circle',source:'projects',slot:'top',paint:{
+  map.addLayer({id:'selected-glow',type:'circle',source:'projects',paint:{
     'circle-radius':['case',['boolean',['feature-state','selected'],false],30,0],
     'circle-color':'#00E87A',
     'circle-opacity':['case',['boolean',['feature-state','selected'],false],0.12,0],
@@ -1240,7 +1256,7 @@ map.on('load',()=>{
   }});
 
   // Pulse glow — on hovered or selected
-  map.addLayer({id:'glow',type:'circle',source:'projects',slot:'top',paint:{
+  map.addLayer({id:'glow',type:'circle',source:'projects',paint:{
     'circle-radius':['case',['boolean',['feature-state','hover'],false],22,['boolean',['feature-state','selected'],false],18,0],
     'circle-color':['get','color'],
     'circle-opacity':['case',['boolean',['feature-state','selected'],false],0.2,0.15],
@@ -1248,7 +1264,7 @@ map.on('load',()=>{
   }});
 
   // Outer ring
-  map.addLayer({id:'ring',type:'circle',source:'projects',slot:'top',paint:{
+  map.addLayer({id:'ring',type:'circle',source:'projects',paint:{
     'circle-radius':['case',['boolean',['feature-state','selected'],false],12,['boolean',['feature-state','hover'],false],11,8],
     'circle-color':'transparent',
     'circle-stroke-width':['case',['boolean',['feature-state','selected'],false],2.5,['boolean',['feature-state','hover'],false],2,1.5],
@@ -1257,7 +1273,7 @@ map.on('load',()=>{
   }});
 
   // Core dot
-  map.addLayer({id:'dot',type:'circle',source:'projects',slot:'top',paint:{
+  map.addLayer({id:'dot',type:'circle',source:'projects',paint:{
     'circle-radius':['case',['boolean',['feature-state','selected'],false],8,['boolean',['feature-state','hover'],false],7,6],
     'circle-color':['case',['boolean',['feature-state','selected'],false],'#00E87A',['get','color']],
     'circle-opacity':1,
@@ -1266,7 +1282,7 @@ map.on('load',()=>{
   }});
 
   // Invisible hit area for easier mobile tapping (20px radius)
-  map.addLayer({id:'dot-hitarea',type:'circle',source:'projects',slot:'top',paint:{
+  map.addLayer({id:'dot-hitarea',type:'circle',source:'projects',paint:{
     'circle-radius':20,
     'circle-color':'transparent',
     'circle-opacity':0,
