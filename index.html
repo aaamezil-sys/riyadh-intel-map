@@ -11,7 +11,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0d0a06;--surface:rgba(14,12,8,0.92);
+  --bg:#0A0A0A;--surface:rgba(10,10,10,0.92);
   --green:#00E87A;--green-dim:rgba(0,232,122,0.10);
   --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
   --text:#FFFFFF;--muted:#999;--dim:#555;
@@ -25,7 +25,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 #header{
   position:absolute;top:0;left:0;right:0;z-index:20;
   padding:14px 22px 0;
-  background:linear-gradient(to bottom,rgba(13,10,6,0.97) 60%,transparent);
+  background:linear-gradient(to bottom,rgba(10,10,10,0.97) 60%,transparent);
   pointer-events:none;
 }
 .back-link{font-size:11px;font-weight:400;color:var(--dim);text-decoration:none;pointer-events:all;display:inline-flex;align-items:center;gap:4px;transition:color 0.15s;margin-bottom:4px;letter-spacing:0.02em}
@@ -49,7 +49,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 .filter-label{display:none}
 #filter-expand{
   display:none;align-items:center;gap:6px;padding:7px 12px;margin-top:4px;
-  background:rgba(13,10,6,0.88);border:1px solid var(--border);border-radius:4px;
+  background:rgba(10,10,10,0.88);border:1px solid var(--border);border-radius:4px;
   cursor:pointer;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;
   color:var(--muted);backdrop-filter:blur(12px);white-space:nowrap;transition:border-color 0.15s,color 0.15s;
 }
@@ -60,7 +60,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 #filters.collapsed #filter-expand .fe-arrow{transform:rotate(-90deg)}
 .filter-btn{
   display:flex;align-items:center;gap:8px;padding:8px 13px;
-  background:rgba(13,10,6,0.88);border:1px solid var(--border);border-radius:4px;
+  background:rgba(10,10,10,0.88);border:1px solid var(--border);border-radius:4px;
   cursor:pointer;font-family:'Poppins',sans-serif;font-size:14px;font-weight:500;
   color:var(--muted);transition:border-color 0.15s,color 0.15s;
   backdrop-filter:blur(12px);white-space:nowrap;
@@ -72,7 +72,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 /* ── LIST VIEW TOGGLE ── */
 #list-toggle{
   display:flex;align-items:center;gap:6px;padding:8px 13px;margin-top:4px;
-  background:rgba(13,10,6,0.88);border:1px solid var(--green);border-radius:4px;
+  background:rgba(10,10,10,0.88);border:1px solid var(--green);border-radius:4px;
   cursor:pointer;font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;
   color:var(--green);backdrop-filter:blur(12px);white-space:nowrap;transition:background 0.15s;
 }
@@ -82,7 +82,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 /* ── LIST PANEL ── */
 #list-panel{
   position:fixed;top:0;left:0;bottom:0;width:360px;z-index:200;
-  background:rgba(13,10,6,0.96);backdrop-filter:blur(24px);
+  background:rgba(10,10,10,0.96);backdrop-filter:blur(24px);
   border-right:1px solid var(--border2);
   transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
   display:flex;flex-direction:column;overflow:hidden;
@@ -111,7 +111,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 .lp-sector-group{margin-top:8px}
 .lp-sector-hdr{
   position:sticky;top:0;padding:8px 20px;font-size:9px;font-weight:700;
-  letter-spacing:0.1em;text-transform:uppercase;background:rgba(13,10,6,0.95);
+  letter-spacing:0.1em;text-transform:uppercase;background:rgba(10,10,10,0.95);
   border-bottom:1px solid rgba(255,255,255,0.04);z-index:1;
 }
 .lp-item{
@@ -128,7 +128,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 /* ── POPUP ── */
 .mapboxgl-popup{max-width:330px!important}
 .mapboxgl-popup-content{
-  background:rgba(13,10,6,0.98)!important;border:1px solid rgba(255,255,255,0.1)!important;
+  background:rgba(10,10,10,0.98)!important;border:1px solid rgba(255,255,255,0.1)!important;
   border-radius:10px!important;padding:0!important;
   box-shadow:0 28px 70px rgba(0,0,0,0.9),0 0 20px rgba(0,232,122,0.08)!important;
   backdrop-filter:blur(24px);overflow:hidden;
@@ -295,7 +295,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 /* ── MOBILE BOTTOM SHEET ── */
 #mobile-sheet{
   display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;
-  max-height:62vh;background:rgba(13,10,6,0.97);
+  max-height:62vh;background:rgba(10,10,10,0.97);
   border-radius:16px 16px 0 0;border-top:1px solid rgba(0,232,122,0.15);
   overflow-y:auto;-webkit-overflow-scrolling:touch;
   backdrop-filter:blur(24px);box-shadow:0 -10px 40px rgba(0,0,0,0.6),0 -2px 20px rgba(0,232,122,0.06);
@@ -1210,7 +1210,7 @@ function buildGeoJSON(sector){
 map.on('load',()=>{
   // Configure Mapbox Standard style — desert theme with road labels
   try{
-    map.setConfigProperty('basemap','lightPreset','dusk');
+    map.setConfigProperty('basemap','lightPreset','night');
     map.setConfigProperty('basemap','showRoadLabels',true);
     map.setConfigProperty('basemap','showPointOfInterestLabels',true);
     map.setConfigProperty('basemap','showTransitLabels',true);
@@ -1218,7 +1218,7 @@ map.on('load',()=>{
     console.log('[RIP] Standard style configured: dusk + road labels');
   }catch(e){ console.warn('[RIP] Config properties failed:',e); }
 
-  map.setFog({color:'#2a1f14','high-color':'#1a1510','horizon-blend':0.04,'space-color':'#0d0a06','star-intensity':0.3});
+  map.setFog({color:'#0a0a0a','high-color':'#0c0e14','horizon-blend':0.015,'space-color':'#060608','star-intensity':0.5});
 
   map.addSource('projects',{type:'geojson',data:buildGeoJSON('all'),promoteId:'id'});
 
