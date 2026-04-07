@@ -36,18 +36,18 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 /* ── STATS BAR ── */
 #statsbar{
   position:absolute;top:74px;left:22px;right:22px;z-index:20;
-  display:flex;gap:0;pointer-events:none;
-  background:rgba(10,10,10,0.7);backdrop-filter:blur(8px);
-  padding:8px 14px;border-radius:6px;border:1px solid var(--border);
+  display:flex;gap:0;pointer-events:none;overflow:hidden;
+  background:rgba(10,10,10,0.75);backdrop-filter:blur(10px);
+  padding:10px 16px;border-radius:6px;border:1px solid var(--border);
 }
-.sblock{display:flex;flex-direction:column;gap:1px;padding-right:20px;margin-right:20px;border-right:1px solid var(--border)}
-.sblock:last-child{border-right:none}
-.sval{font-weight:700;font-size:20px;color:#fff}
+.sblock{display:flex;flex-direction:column;gap:1px;padding-right:18px;margin-right:18px;border-right:1px solid var(--border);flex-shrink:0}
+.sblock:last-child{border-right:none;padding-right:0;margin-right:0}
+.sval{font-weight:700;font-size:18px;color:#fff;white-space:nowrap}
 .sval.green{color:var(--green)}
-.slabel{font-size:10px;font-weight:400;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase}
+.slabel{font-size:9px;font-weight:400;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap}
 
 /* ── FILTERS ── */
-#filters{position:absolute;top:132px;left:22px;z-index:20;display:flex;flex-direction:column;gap:3px}
+#filters{position:absolute;top:130px;left:22px;z-index:20;display:flex;flex-direction:column;gap:3px}
 .filter-label{display:none}
 #filter-expand{
   display:none;align-items:center;gap:6px;padding:7px 12px;margin-top:4px;
@@ -327,10 +327,10 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
   #header{padding:10px 14px 0}
   .brand{font-size:20px}
   .back-link{font-size:10px}
-  #statsbar{top:58px;left:14px;right:14px;flex-wrap:wrap;gap:0;padding:6px 10px;border-radius:5px}
-  .sblock{padding-right:12px;margin-right:12px}
-  .sval{font-size:16px}
-  .slabel{font-size:9px}
+  #statsbar{top:58px;left:10px;right:10px;flex-wrap:nowrap;gap:0;padding:7px 10px;border-radius:5px}
+  .sblock{padding-right:8px;margin-right:8px;min-width:0;flex-shrink:1}
+  .sval{font-size:14px}
+  .slabel{font-size:7px;letter-spacing:0.02em}
   #filters{top:118px;left:14px;gap:2px}
   .filter-btn{padding:6px 10px;font-size:13px}
   .fcount{font-size:10px;padding-left:8px}
@@ -375,8 +375,8 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 html[dir="rtl"] #header{text-align:right}
 html[dir="rtl"] .back-link{direction:ltr;unicode-bidi:embed}
 html[dir="rtl"] #statsbar{direction:rtl}
-html[dir="rtl"] .sblock{padding-right:0;margin-right:0;border-right:none;padding-left:20px;margin-left:20px;border-left:1px solid var(--border)}
-html[dir="rtl"] .sblock:last-child{border-left:none}
+html[dir="rtl"] .sblock{padding-right:0;margin-right:0;border-right:none;padding-left:18px;margin-left:18px;border-left:1px solid var(--border)}
+html[dir="rtl"] .sblock:last-child{border-left:none;padding-left:0;margin-left:0}
 html[dir="rtl"] #filters{left:auto;right:22px}
 html[dir="rtl"] .fcount{margin-left:0;margin-right:auto;padding-left:0;padding-right:12px}
 html[dir="rtl"] #metrics{left:auto;right:22px}
