@@ -46,9 +46,16 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 
 /* ── FILTERS ── */
 #filters{position:absolute;top:108px;left:22px;z-index:20;display:flex;flex-direction:column;gap:3px}
-.filter-label{font-size:9px;font-weight:600;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;cursor:pointer;display:flex;align-items:center;gap:6px}
-.filter-label .fl-arrow{transition:transform 0.2s;font-size:7px}
-#filters.collapsed .filter-label .fl-arrow{transform:rotate(-90deg)}
+.filter-label{display:none}
+#filter-expand{
+  display:none;align-items:center;gap:6px;padding:7px 12px;margin-top:4px;
+  background:rgba(10,10,10,0.84);border:1px solid var(--border);border-radius:4px;
+  cursor:pointer;font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;
+  color:var(--muted);backdrop-filter:blur(12px);white-space:nowrap;transition:border-color 0.15s,color 0.15s;
+}
+#filter-expand:hover{color:#fff;border-color:var(--border2)}
+#filter-expand .fe-arrow{font-size:8px;margin-left:4px;transition:transform 0.2s}
+#filters:not(.collapsed) #filter-expand{display:none}
 #filters.collapsed .filter-btn[data-sector]:not([data-sector="all"]){display:none}
 #filters.collapsed #list-toggle{display:none}
 .filter-btn{
@@ -325,6 +332,7 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
   #filters{top:94px;left:14px;gap:2px}
   .filter-btn{padding:5px 9px;font-size:11px}
   .fcount{font-size:9px;padding-left:8px}
+  #filter-expand{display:flex}
   #clock{top:10px;right:14px}
   .clock-time{font-size:12px}
   #lang-toggle{top:10px;right:80px;font-size:9px;padding:4px 8px}
@@ -421,6 +429,7 @@ html[dir="rtl"] #list-panel.open{transform:translateX(0)}
 <div id="filters">
   <div class="filter-label" onclick="document.getElementById('filters').classList.toggle('collapsed')">Sector <span class="fl-arrow">▼</span></div>
   <button class="filter-btn" data-sector="all"><span class="fdot" style="background:var(--green)"></span>All Projects<span class="fcount" id="c-all">38</span></button>
+  <button id="filter-expand" onclick="document.getElementById('filters').classList.toggle('collapsed')"><span id="fe-label">More sectors</span> <span class="fe-arrow">▼</span></button>
   <button class="filter-btn" data-sector="sports"><span class="fdot" style="background:var(--sports)"></span>Sports & Performance<span class="fcount" id="c-sports"></span></button>
   <button class="filter-btn" data-sector="realestate"><span class="fdot" style="background:var(--realestate)"></span>Real Estate & Mixed<span class="fcount" id="c-realestate"></span></button>
   <button class="filter-btn" data-sector="hospitality"><span class="fdot" style="background:var(--hospitality)"></span>Hospitality & Tourism<span class="fcount" id="c-hospitality"></span></button>
@@ -501,7 +510,7 @@ const UI_TEXT={
     hospitality:'Hospitality & Tourism', culture:'Culture & Entertainment',
     transport:'Transport & Infra', energy:'Energy & Industry',
     intelFeed:'Intel Feed', builtBy:'Built by',
-    compare:'Compare', compareTitle:'Project Comparison', close:'Close', listView:'List View', searchProjects:'Search projects...',
+    compare:'Compare', compareTitle:'Project Comparison', close:'Close', listView:'List View', searchProjects:'Search projects...', moreSectors:'More sectors',
     toggleLabel:'عربي',
     investment:'Investment', gdp:'GDP Contribution', jobs:'Jobs',
     status:'Status', completion:'Completion', phase:'Phase',
@@ -519,7 +528,7 @@ const UI_TEXT={
     hospitality:'الضيافة والسياحة', culture:'الثقافة والترفيه',
     transport:'النقل والبنية التحتية', energy:'الطاقة والصناعة',
     intelFeed:'آخر المستجدات', builtBy:'بناء',
-    compare:'مقارنة', compareTitle:'مقارنة المشاريع', close:'إغلاق', listView:'عرض القائمة', searchProjects:'بحث عن مشاريع...',
+    compare:'مقارنة', compareTitle:'مقارنة المشاريع', close:'إغلاق', listView:'عرض القائمة', searchProjects:'بحث عن مشاريع...', moreSectors:'المزيد من القطاعات',
     toggleLabel:'English',
     investment:'الاستثمار', gdp:'المساهمة في الناتج المحلي', jobs:'الوظائف',
     status:'الحالة', completion:'الإنجاز', phase:'المرحلة',
@@ -599,8 +608,9 @@ function applyLang(){
     ?`${t.builtBy} <a href="https://ahmedmezil.com" target="_blank" rel="noopener" style="direction:ltr;unicode-bidi:isolate">Ahmed Mezil</a>`
     :`${t.builtBy} <a href="https://ahmedmezil.com" target="_blank" rel="noopener">Ahmed Mezil</a>`;
 
-  // List view
+  // List view + expand
   document.getElementById('list-toggle-label').textContent=t.listView;
+  document.getElementById('fe-label').textContent=t.moreSectors;
   document.getElementById('lp-search').placeholder=t.searchProjects;
   if(document.getElementById('list-panel').classList.contains('open')) renderListPanel();
 
