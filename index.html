@@ -46,7 +46,11 @@ html,body{height:100%;font-family:'Poppins',sans-serif;background:var(--bg);colo
 
 /* ── FILTERS ── */
 #filters{position:absolute;top:108px;left:22px;z-index:20;display:flex;flex-direction:column;gap:3px}
-.filter-label{font-size:9px;font-weight:600;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px}
+.filter-label{font-size:9px;font-weight:600;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.filter-label .fl-arrow{transition:transform 0.2s;font-size:7px}
+#filters.collapsed .filter-label .fl-arrow{transform:rotate(-90deg)}
+#filters.collapsed .filter-btn[data-sector]:not([data-sector="all"]){display:none}
+#filters.collapsed #list-toggle{display:none}
 .filter-btn{
   display:flex;align-items:center;gap:8px;padding:6px 11px;
   background:rgba(10,10,10,0.84);border:1px solid var(--border);border-radius:4px;
@@ -415,7 +419,7 @@ html[dir="rtl"] #list-panel.open{transform:translateX(0)}
 
 <!-- FILTERS -->
 <div id="filters">
-  <div class="filter-label">Sector</div>
+  <div class="filter-label" onclick="document.getElementById('filters').classList.toggle('collapsed')">Sector <span class="fl-arrow">▼</span></div>
   <button class="filter-btn" data-sector="all"><span class="fdot" style="background:var(--green)"></span>All Projects<span class="fcount" id="c-all">38</span></button>
   <button class="filter-btn" data-sector="sports"><span class="fdot" style="background:var(--sports)"></span>Sports & Performance<span class="fcount" id="c-sports"></span></button>
   <button class="filter-btn" data-sector="realestate"><span class="fdot" style="background:var(--realestate)"></span>Real Estate & Mixed<span class="fcount" id="c-realestate"></span></button>
@@ -1202,39 +1206,32 @@ map.on('load',()=>{
   try{ map.setPaintProperty('national-park','fill-color','#16200e'); }catch(e){}
 
   // Enhance road visibility and highway labels for investor context
-  const allLayers=map.getStyle().layers;
+  // Approach: iterate ALL style layers — match roads broadly by id, source-layer, or type
+  const allLayers=map.getStyle().layers||[];
+  console.log('[RIP] Total map layers:',allLayers.length);
+  const roadKeywords=/road|highway|motorway|trunk|primary|secondary|tertiary|street|bridge|tunnel|path|link|shield|route/i;
   allLayers.forEach(layer=>{
     const id=layer.id;
-    // Brighten road lines — target all road line layers
-    if(layer.type==='line'&&(id.match(/^road/)||id.match(/^bridge/)||id.match(/^tunnel/))){
-      try{ map.setPaintProperty(id,'line-opacity',0.6); }catch(e){}
+    const sl=layer['source-layer']||'';
+    const isRoad=roadKeywords.test(id)||roadKeywords.test(sl);
+    if(!isRoad) return;
+    // Brighten road lines
+    if(layer.type==='line'){
+      try{ map.setPaintProperty(id,'line-opacity',0.7); }catch(e){}
     }
-    // Make road labels visible and bright
-    if(layer.type==='symbol'&&id.match(/^road/)){
-      try{
-        map.setLayoutProperty(id,'visibility','visible');
-        map.setPaintProperty(id,'text-color','rgba(210,210,200,0.8)');
-        map.setPaintProperty(id,'text-halo-color','rgba(0,0,0,0.9)');
-        map.setPaintProperty(id,'text-halo-width',2);
-      }catch(e){}
-    }
-    // Show shield layers (highway number badges)
-    if(id.match(/shield|number/)){
-      try{
-        map.setLayoutProperty(id,'visibility','visible');
-        map.setPaintProperty(id,'text-color','rgba(220,220,210,0.9)');
-      }catch(e){}
+    // Make road labels & shields visible and bright
+    if(layer.type==='symbol'){
+      try{ map.setLayoutProperty(id,'visibility','visible'); }catch(e){}
+      try{ map.setPaintProperty(id,'text-color','#d4d4c8'); }catch(e){}
+      try{ map.setPaintProperty(id,'text-opacity',0.9); }catch(e){}
+      try{ map.setPaintProperty(id,'text-halo-color','#000000'); }catch(e){}
+      try{ map.setPaintProperty(id,'text-halo-width',2); }catch(e){}
+      console.log('[RIP] Enhanced road label:',id);
     }
   });
-  // Force-show key label layers that dark-v11 may hide by default
-  ['road-label','road-number-shield','road-exit-shield'].forEach(id=>{
-    try{
-      map.setLayoutProperty(id,'visibility','visible');
-      map.setPaintProperty(id,'text-color','rgba(210,210,200,0.85)');
-      map.setPaintProperty(id,'text-halo-color','rgba(0,0,0,0.9)');
-      map.setPaintProperty(id,'text-halo-width',2);
-    }catch(e){}
-  });
+  // Mapbox GL JS v3 Standard style: try config-based approach for road labels
+  try{ map.setConfigProperty('basemap','showRoadLabels',true); console.log('[RIP] setConfigProperty showRoadLabels=true'); }catch(e){}
+  try{ map.setConfigProperty('basemap','showTransitLabels',true); }catch(e){};
 
   map.addSource('projects',{type:'geojson',data:buildGeoJSON('all'),promoteId:'id'});
 
@@ -1468,8 +1465,11 @@ function selectFromList(id){
 
 map.addControl(new mapboxgl.NavigationControl({showCompass:true}),'bottom-left');
 
-// Auto-collapse feed on mobile
-if(window.innerWidth<=600) document.getElementById('metrics').classList.add('collapsed');
+// Auto-collapse feed and filters on mobile
+if(window.innerWidth<=600){
+  document.getElementById('metrics').classList.add('collapsed');
+  document.getElementById('filters').classList.add('collapsed');
+}
 
 // ── COMPARISON TOOL ──
 let compareList = [];
